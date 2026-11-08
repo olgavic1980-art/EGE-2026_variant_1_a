@@ -1,0 +1,1854 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Тренажёр ЕГЭ Английский 2026 — Финал v2 (исправлено чтение)</title>
+<style>
+body{font-family:sans-serif;background:#b9bcae;padding:20px;margin:0}
+.card{background:#fff;border-radius:20px;padding:24px;margin-bottom:16px;max-width:900px;margin-left:auto;margin-right:auto}
+.card-accent{background:#c6ef4e}
+.btn{padding:12px 24px;border-radius:999px;border:none;font-size:15px;font-weight:600;cursor:pointer;margin:4px;font-family:inherit}
+.btn-primary{background:#000;color:#fff}
+.btn-secondary{background:#fff;color:#000;border:1px solid #ccc}
+.btn-size{min-width:120px}
+.btn-sm{padding:8px 16px;font-size:13px}
+h1{margin-bottom:12px}
+h2{margin-bottom:10px}
+h3{margin-bottom:8px}
+.option{background:#f0f0f0;border-radius:12px;padding:12px;margin:8px 0;cursor:pointer;border:2px solid transparent}
+.option:hover{background:#e8e8e8}
+.option.selected{background:#c6ef4e;border-color:#000}
+.match-row{display:flex;gap:10px;align-items:center;margin:8px 0;padding:8px;background:#f6f7f7;border-radius:10px}
+.match-row label{flex:1;font-weight:600}
+.match-row input{width:70px;padding:8px;border-radius:8px;border:1px solid #ccc;text-align:center;font-size:15px}
+.blank-input{border:none;border-bottom:2px solid #000;background:transparent;padding:4px 8px;min-width:140px;font-size:15px;text-align:center;font-family:inherit}
+.blank-input:focus{outline:none;border-bottom-color:#c6ef4e}
+.feedback{padding:16px;border-radius:12px;margin-top:12px}
+.feedback-ok{background:#e8f7c8}
+.feedback-err{background:#ffe8e8}
+.feedback-info{background:#e8f0ff}
+.feedback-warn{background:#fff3cd}
+.badge{display:inline-block;padding:4px 12px;border-radius:999px;font-size:12px;font-weight:600;margin-right:6px}
+.badge-diag{background:#e0e0e0}
+.badge-practice{background:#c6ef4e}
+.badge-control{background:#000;color:#fff}
+.badge-ok{background:#c6ef4e}
+.badge-warn{background:#ffd966}
+.badge-err{background:#ff8a8a}
+.progress{height:8px;background:#e0e0e0;border-radius:4px;margin:12px 0;overflow:hidden}
+.progress-fill{height:100%;background:#c6ef4e;transition:width .3s}
+table{width:100%;border-collapse:collapse;margin-top:12px}
+th,td{padding:10px;text-align:left;border-bottom:1px solid #eee}
+th{background:#f6f7f7;font-weight:700}
+.text-block{background:#f9f9f9;border-radius:12px;padding:16px;margin:12px 0;white-space:pre-wrap;line-height:1.6;font-size:14px}
+.text-block-full{background:#f9f9f9;border-radius:12px;padding:16px;margin:12px 0;line-height:1.6;font-size:14px}
+.text-block-full p{margin-bottom:10px}
+.speaker{font-weight:700}
+.prompt-word{color:#666;font-size:13px;font-weight:600;margin:4px 0 10px 0}
+.statement-list{margin:12px 0;padding-left:20px}
+.statement-list li{margin-bottom:6px}
+.wheel-card{background:#fff;border-radius:24px;padding:24px;max-width:900px;margin:16px auto}
+.wheel-wrap{display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap}
+.wheel-svg-wrap{flex:1;min-width:320px}
+.wheel-legend{display:flex;flex-direction:column;gap:10px;padding:12px}
+.legend-item{display:flex;align-items:center;gap:10px;font-size:14px}
+.legend-dot{width:14px;height:14px;border-radius:50%}
+.legend-dot.now{background:#c6ef4e}
+.legend-dot.before{background:transparent;border:2px solid #000}
+.wheel-note{margin-top:16px;font-size:13px;color:#666;font-style:italic}
+.info-box{background:#e8f0ff;border-radius:12px;padding:12px;margin:12px 0;font-size:14px}
+.warn{background:#fff3cd;border-radius:12px;padding:12px;margin:12px 0;font-size:14px}
+.audio-player{background:#f6f7f7;border-radius:12px;padding:12px;margin:12px 0}
+.audio-player audio{width:100%;margin-bottom:8px}
+.audio-hint{font-size:13px;color:#666;margin-top:6px}
+.audio-error{background:#fff3cd;border-radius:8px;padding:10px;margin-top:8px;font-size:13px;color:#7a5d00}
+.toggle-text{background:transparent;border:1px solid #ccc;border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;margin-top:8px;font-family:inherit}
+.toggle-text:hover{background:#f0f0f0}
+.footer{margin-top:24px;padding:16px;text-align:center;font-size:13px;color:#555;max-width:900px;margin-left:auto;margin-right:auto}
+.footer a{color:#000;text-decoration:underline;cursor:pointer;margin:0 8px}
+.inline-blank{display:inline-block;border-bottom:2px solid #000;background:#fff;padding:4px 8px;min-width:60px;text-align:center;font-size:14px;margin:0 4px}
+.inline-blank input{border:none;background:transparent;text-align:center;font-size:14px;width:100%;padding:2px}
+.inline-blank input:focus{outline:none}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div class="footer" id="footer"></div>
+
+<script>
+'use strict';
+
+var LS_KEY = 'trainer_ege_en_2026_v2_reading';
+var storageAvailable = true;
+
+var BANK = {
+  bankVersion: "1.2.1",
+  sections: [
+    {id:"S1", title:"Аудирование", short:"Аудирование"},
+    {id:"S2", title:"Чтение", short:"Чтение"},
+    {id:"S3", title:"Грамматика и лексика", short:"Грам. и лекс."}
+  ],
+  questions: []
+};
+
+// ===== S1. АУДИРОВАНИЕ (13 заданий) =====
+BANK.questions.push({id:"S1-01",version:1,sectionId:"S1",role:"diagnostic",type:"match2",title:"Аудирование: соответствие высказываний",instruction:"Установите соответствие между высказываниями A-F и утверждениями 1-7. Одно лишнее.",taskNumber:"1",audioFile:"1.mp3",statements:["1. Snacks may help you handle your negative emotions.","2. Having snacks can have a lot of advantages.","3. Snacks are a way out when you are under pressure.","4. All snacks are unhealthy and lead to weight problems.","5. A snack may be a reward for some achievements.","6. It is possible to have a healthy snack.","7. Some people have snacks because they are bored."],audioText:"Speaker A: I'm going to have my A-levels this year, so life is pretty stressful for me at the moment. When confronted with stress, all I want to do is to get rid of my anxieties, so I often turn to snacks to cope.\n\nSpeaker B: Being a teenage girl, I'm often down in the dumps. When I'm feeling down, I often have a snack.\n\nSpeaker C: Once I had to spend about a month at home. I ended up watching TV sitcoms and eating crisps all day long.\n\nSpeaker D: When I finish an important school project or get an excellent mark, I want to have some crisps.\n\nSpeaker E: I don't think that all snacks are unhealthy. You can always choose fresh vegetable sticks, apples or berries.\n\nSpeaker F: When done mindfully, snacking can provide you with lots of benefits.",leftLabels:["A","B","C","D","E","F"],answer:"317562",maxPoints:2,explanation:"A→3, B→1, C→7, D→5, E→6, F→2. Лишнее: 4.",source:"Демо ЕГЭ 2026, задание 1"});
+
+BANK.questions.push({id:"S1-02",version:1,sectionId:"S1",role:"diagnostic",type:"match3",title:"Аудирование: True/False/Not stated",instruction:"Определите, какие из утверждений A-G соответствуют (1), не соответствуют (2) или не сказано (3).",taskNumber:"2",audioFile:"2.mp3",statements:["A. Jane spent a month in Italy.","B. Jane and her parents had a lazy vacation in Italy.","C. Jane knows some facts about the history of Pompeii.","D. Jane got to Pompeii by bus.","E. Jane thinks the ticket to Pompeii was not expensive.","F. Jane is always lucky to have good guides.","G. Peter is going to Italy next summer."],audioText:"Peter: Hi, Jane! You have got a great tan.\nJane: I have just come back from Italy. I spent two wonderful weeks there.\nPeter: What place did you like most?\nJane: Pompeii. We got the train from Naples.\nPeter: How much was the ticket?\nJane: Only 1.80 euros. Our guide was fantastic.",leftLabels:["A","B","C","D","E","F","G"],answer:"2212133",maxPoints:3,explanation:"A→2, B→2, C→1, D→2, E→1, F→3, G→3.",source:"Демо ЕГЭ 2026, задание 2"});
+
+BANK.questions.push({id:"S1-03",version:1,sectionId:"S1",role:"practice",type:"number1",title:"Аудирование: множественный выбор",instruction:"Запишите цифру 1, 2 или 3.",taskNumber:"3",audioFile:"3.mp3",text:"What do we learn about Eva James?",audioText:"Eva James is a world-famous singer, songwriter, and pianist.",options:["She has been a singer for 15 years.","She never got a formal musical education.","She is internationally famous."],answer:"3",maxPoints:1,explanation:"world-famous = internationally famous.",source:"Демо ЕГЭ 2026, задание 3"});
+BANK.questions.push({id:"S1-04",version:1,sectionId:"S1",role:"practice",type:"number1",title:"Аудирование: множественный выбор",instruction:"Запишите цифру 1, 2 или 3.",taskNumber:"4",audioFile:"3.mp3",text:"For Eva, starting a career as a teenager was...",audioText:"When I first started in the world of music, it was such a shock for me. It was a totally different world.",options:["quite easy.","challenging.","pleasant."],answer:"2",maxPoints:1,explanation:"such a shock = challenging.",source:"Демо ЕГЭ 2026, задание 4"});
+BANK.questions.push({id:"S1-05",version:1,sectionId:"S1",role:"practice",type:"number1",title:"Аудирование: множественный выбор",instruction:"Запишите цифру 1, 2 или 3.",taskNumber:"5",audioFile:"3.mp3",text:"Eva thinks other people's critical remarks are...",audioText:"You just grow up and realize that everybody's opinion does not matter. You just start to care less.",options:["natural.","destructive.","helpful."],answer:"1",maxPoints:1,explanation:"everybody judges, it is natural.",source:"Демо ЕГЭ 2026, задание 5"});
+BANK.questions.push({id:"S1-06",version:1,sectionId:"S1",role:"practice",type:"number1",title:"Аудирование: множественный выбор",instruction:"Запишите цифру 1, 2 или 3.",taskNumber:"6",audioFile:"3.mp3",text:"Eva thinks strong people NEVER...",audioText:"Strong people are the ones who are in touch with their emotions.",options:["cry in the presence of others.","talk about their problems.","hide their real feelings."],answer:"3",maxPoints:1,explanation:"They do not hide feelings.",source:"Демо ЕГЭ 2026, задание 6"});
+BANK.questions.push({id:"S1-07",version:1,sectionId:"S1",role:"practice",type:"number1",title:"Аудирование: множественный выбор",instruction:"Запишите цифру 1, 2 или 3.",taskNumber:"7",audioFile:"3.mp3",text:"Eva's new album is NOT about...",audioText:"It is about breaking out of people's opinions of you and redefining whoever you are.",options:["finding your place in the world.","shaping adequate self-esteem.","difficulties of the modern world."],answer:"3",maxPoints:1,explanation:"NOT about difficulties of the modern world.",source:"Демо ЕГЭ 2026, задание 7"});
+BANK.questions.push({id:"S1-08",version:1,sectionId:"S1",role:"practice",type:"number1",title:"Аудирование: множественный выбор",instruction:"Запишите цифру 1, 2 или 3.",taskNumber:"8",audioFile:"3.mp3",text:"Eva started to write songs because it was...",audioText:"I wrote things down just to get them out of my head, almost to make space.",options:["a form of self-therapy.","a topic to discuss with her friends.","her homework at school."],answer:"1",maxPoints:1,explanation:"get things out of her head = self-therapy.",source:"Демо ЕГЭ 2026, задание 8"});
+BANK.questions.push({id:"S1-09",version:1,sectionId:"S1",role:"practice",type:"number1",title:"Аудирование: множественный выбор",instruction:"Запишите цифру 1, 2 или 3.",taskNumber:"9",audioFile:"3.mp3",text:"Speaking about the entertainment industry today, Eva says that...",audioText:"You still have to work extra hard, harder than a man would, you still have to prove yourself more.",options:["there is more gender inequality there than ever before.","it is still not very easy for a woman to work in.","women occupy most powerful positions there."],answer:"2",maxPoints:1,explanation:"still not very easy for a woman.",source:"Демо ЕГЭ 2026, задание 9"});
+BANK.questions.push({id:"S1-10",version:1,sectionId:"S1",role:"control",type:"match2",title:"Аудирование: соответствие (досуг)",instruction:"Установите соответствие между высказываниями A-F и утверждениями 1-7. Одно лишнее.",taskNumber:"1",statements:["1. A person took up a new hobby thanks to a friend.","2. A person feels guilty about wasted time.","3. A person prefers active recreation.","4. A person uses a hobby to relieve stress.","5. A person turned a pastime into income.","6. A person regrets giving up a hobby.","7. A person combines several interests."],audioText:"Speaker A: My best friend dragged me to a rock-climbing gym.\n\nSpeaker B: I used to play guitar but stopped. I regret it.\n\nSpeaker C: When I am stressed, knitting calms me down.\n\nSpeaker D: I started baking cakes and now make money from it.\n\nSpeaker E: I am into photography, coding, and Japanese.\n\nSpeaker F: I spent the summer playing video games. I feel ashamed.",leftLabels:["A","B","C","D","E","F"],answer:"164572",maxPoints:2,explanation:"A→1, B→6, C→4, D→5, E→7, F→2.",source:"Авторское задание"});
+BANK.questions.push({id:"S1-11",version:1,sectionId:"S1",role:"control",type:"match3",title:"Аудирование: True/False/Not stated (Казань)",instruction:"Определите, какие из утверждений A-G соответствуют (1), не соответствуют (2) или не сказано (3).",taskNumber:"2",statements:["A. Mark and Anna spent a week in Kazan.","B. Anna's family travelled by car.","C. Mark has already been to Kazan before.","D. The family visited the Kazan Kremlin.","E. Anna thinks local food was expensive.","F. Anna's brother enjoyed the boat trip.","G. Mark is planning to visit Kazan in winter."],audioText:"Anna: We went to Kazan. We spent five days there.\nMark: I have never been there. How did you get there?\nAnna: We took the train. The Kazan Kremlin is a must-see.\nMark: Did you try local food?\nAnna: Everything was delicious and affordable. My brother loved the boat trip.",leftLabels:["A","B","C","D","E","F","G"],answer:"2221213",maxPoints:3,explanation:"A→2, B→2, C→2, D→1, E→2, F→1, G→3.",source:"Авторское задание"});
+
+// ===== S2. ЧТЕНИЕ (25 заданий) =====
+BANK.questions.push({id:"S2-01",version:1,sectionId:"S2",role:"diagnostic",type:"match3",title:"Чтение: заголовки (тайга)",instruction:"Установите соответствие между текстами A-G и заголовками 1-8. Один заголовок лишний.",taskNumber:"10",statements:["1. Humans cause harm","2. Where is the taiga found?","3. Clever habits","4. Adding two more","5. Young and beautiful","6. Surviving flora","7. What's the weather like?","8. Native people's habits"],texts:{A:"The taiga biome stretches across the Northern Hemisphere. It takes in large areas of North America and Eurasia, especially Canada and Russia, respectively. It also spans across Alaska and Scandinavia. The taiga biome occupies about 27% of the Earth's surface. It is located south of the tundra biome, which is characterized by a frozen land and constant snow. Because of its location, the taiga biome is rather cold. It is to the north of the temperate forests and grasslands, which are much warmer.",B:"There are cold winds that blow cold Arctic air into the taiga biome, making it very cold most of the year. Therefore, this climate is called the subarctic climate. The Earth rotates around the sun annually. Due to the tilt of the Earth, the taiga biome faces away from the sun, resulting in long snowy winters, which are extremely cold. Another effect is that there is less radiation from the sun to heat the land up. For these reasons, the summer is barely three months long, and the winter is double that.",C:"The taiga is home to various species of plants. These plants are used to an extremely cold climate and mainly consist of coniferous trees, evergreens, and spruces. The absence of sunlight in the biome is an important factor, which means plants must have adaptable leaves. The evergreens have green leaves throughout the year, so they have enough food due to the presence of chlorophyll in their leaves. They keep the same leaves for a very long time, enabling them to use minimal solar energy.",D:"There is a limit to the number of animals that can survive in the taiga, due to the cold temperatures. Still, there are many animal species, including mammals, birds, and insect species. Like the taiga plants, animals in the biome must have adaptive features to survive in this climate. During the summer, more animals are in sight than during the winter. This is because most of them either migrate to warmer biomes where they can cope easily, especially for birds, or spend the winter sleeping until the next summer season.",E:"Surprisingly, there are six seasons, as identified by the native people of the boreal forest or taiga. The seasons are spring, break-up, summer, autumn, freeze-up, and winter. The period in October, when the trees lose their leaves and the lakes become frozen, is known as freeze-up. This period occurs after autumn and ends when winter starts. The other period is when the snow melts, and the ground looks bare. This season is called the break-up season and may last quite long — until all the ice in the lakes has melted.",F:"Compared to certain trees that grow in more temperate climates, most of the trees in the boreal forest or taiga are young. Forests are typically less than 100 years old throughout the western boreal zone, and mainly younger than 200 years old in the eastern boreal zone. Due to frequent natural disasters that are the result of an ecological loop that renews the boreal forest, scientists do not believe this amazing forest to be ancient. But they all agree that it is the largest biome on land.",G:"The boreal forest contributes greatly to the earth's oxygen supply by collecting carbon dioxide produced by people. It helps a lot in the preservation of the ozone layer thanks to its green vegetation. However, human activities such as deforestation are destroying the boreal forest's structure. When a tree is harmed, it takes a long time to grow back, because the biome has an extremely slow growth rate. That's why the boreal forest has drawn the attention of the environment protection specialists worldwide."},leftLabels:["A","B","C","D","E","F","G"],answer:"2763451",maxPoints:3,explanation:"A→2, B→7, C→6, D→3, E→8, F→5, G→1.",source:"Демо ЕГЭ 2026, задание 10"});
+
+BANK.questions.push({id:"S2-02",version:1,sectionId:"S2",role:"diagnostic",type:"match2",title:"Чтение: вставка пропусков (пакеты)",instruction:"Заполните пропуски A-F частями предложений 1-7. Одна часть лишняя.",taskNumber:"11",text:"Reusable bags\n\nUsing fewer resources and producing less waste are issues not only for big corporations and factories to worry about. Each of us can make a big difference in how we impact the environment. People can continue to consume excessively and create billions of pounds of waste each year, A ______ a more environmentally-friendly lifestyle.\n\nPlastic bags do not easily decompose, and they contribute to the pollution of nature. A plastic bag can take from 15 to 1,000 years to break down, depending on the environment. Moreover, the cost of recycling plastic bags outweighs their value. This is another reason B ______ to landfill sites. This results in huge piles of garbage C ______, releasing bad smells throughout the day and serving as a distraction for tourists.\n\nIt is high time for us to use alternative sources, so as to reduce the impact of plastic bags on the environment. One such change is to get rid of plastic bags and use reusable bags.\n\nThere are many reasons D ______, and it is necessary to switch to reusable bags. A lot of oil and natural gas go into the production of plastic bags, which are not recyclable. Choosing reusable bags saves on these natural resources and protects the environment. Besides, the nature around us is polluted by plastic bags E ______ or get into animals' homes.\n\nSometimes animals try to eat these bags, thinking they are part of nature, F ______.",options:["1. because they often fly away into trees","2. or they can make changes to adopt","3. why plastic bags are not ideal at all","4. because they want to protect nature","5. which may simply lead to their death","6. why most plastic bags find their way","7. that can be easily seen across the city"],blanks:["A","B","C","D","E","F"],answer:"267315",maxPoints:2,explanation:"A→2, B→6, C→7, D→3, E→1, F→5.",source:"Демо ЕГЭ 2026, задание 11"});
+
+BANK.questions.push({id:"S2-03",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"12",text:"The purpose of the text is to...",passage:"Only a few lifestyle choices have as large an impact on your health as physical activity. But many face a problem of keeping up regular exercise. What are some of the tricks?",options:["explain how not to give up exercising.","share the author's experience.","discuss health benefits.","give advice on different types."],answer:"1",maxPoints:1,explanation:"About not giving up.",source:"Демо ЕГЭ 2026, задание 12"});
+BANK.questions.push({id:"S2-04",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"13",text:"What is the best summary of the advice given in paragraph 2?",passage:"My personal trainer says a workout does not have to take an hour. You tell yourself you are going to make time and change your schedule accordingly.",options:["Put regular exercise into your schedule on the phone.","It is vital to make a plan for an efficient workout.","A trainer can make your time exercising more effective.","A short workout is better than a longer session."],answer:"2",maxPoints:1,explanation:"make a plan for efficient workout.",source:"Демо ЕГЭ 2026, задание 13"});
+BANK.questions.push({id:"S2-05",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"14",text:"The author's message in paragraphs 3 and 4 is that...",passage:"If previous exercise regimes have not worked, do not beat yourself up or try them again, just try something else.",options:["if you fail to do exercise once, it is likely you will give up.","being passionate and confident leads you to success.","if you fail in some exercise plan, try it again later.","testing various ways of exercising will help you stick to it."],answer:"4",maxPoints:1,explanation:"testing various ways.",source:"Демо ЕГЭ 2026, задание 14"});
+BANK.questions.push({id:"S2-06",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"15",text:"Which is FALSE about training recommendations after the age of 30?",passage:"We start to lose muscle mass over the age of around 30. Resistance training is important. There needs to be some form of aerobic exercise, too, and we would also recommend people start adding balance challenges.",options:["The combination of different types of exercise works best.","It is better to avoid balance exercises because of age changes.","Without regular exercise your muscle mass will decrease.","Adding training with body weight or special tools is vital."],answer:"2",maxPoints:1,explanation:"NOT avoid balance exercises.",source:"Демо ЕГЭ 2026, задание 15"});
+BANK.questions.push({id:"S2-07",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор (лексика)",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"16",text:"The expression \"raising the ante\" is closest in meaning to...",passage:"My second rule is raising the ante. If you do 5-km runs, rate your exertion from one to 10. As you see those numbers go down, push yourself faster.",options:["noticing progress.","checking with equipment.","increasing the level.","changing your attitude."],answer:"3",maxPoints:1,explanation:"Increasing the level.",source:"Демо ЕГЭ 2026, задание 16"});
+BANK.questions.push({id:"S2-08",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"17",text:"According to the author, doing exercise at home is...",passage:"Another shortcut to regular exercise is to work out from home. If you have caring responsibilities, you can do a lot within a small area at home.",options:["possible with a good personal trainer.","convenient for busy people.","hardly enough on a regular basis.","more comfortable than at a gym."],answer:"2",maxPoints:1,explanation:"convenient for busy people.",source:"Демо ЕГЭ 2026, задание 17"});
+BANK.questions.push({id:"S2-09",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"18",text:"It is implied that household chores...",passage:"The measure really is you are getting generally hot, out of breath. With gardening, you would have to be doing the heavier gardening, digging.",options:["are better done with somebody else.","are more difficult than exercising.","should be intensive to count as exercise.","can hardly contribute to workout."],answer:"3",maxPoints:1,explanation:"should be intensive.",source:"Демо ЕГЭ 2026, задание 18"});
+
+BANK.questions.push({id:"S2-10",version:1,sectionId:"S2",role:"control",type:"match3",title:"Чтение: заголовки (ИИ в образовании)",instruction:"Установите соответствие между текстами A-G и заголовками 1-8. Один лишний.",taskNumber:"10",statements:["1. Personalized learning","2. Privacy risks","3. Academic integrity challenges","4. Changing role of educators","5. Accessibility improvements","6. Financial barriers","7. Future of assessment","8. Complete replacement of teachers"],texts:{A:"Modern AI tutors can analyze a student's performance in real-time, adjusting the difficulty.",B:"The widespread use of educational software raises concerns about data collection.",C:"AI can generate essays, making it difficult to distinguish between student's work and machine-generated content.",D:"Teachers are now expected to act as mentors and facilitators.",E:"AI-powered tools are breaking down barriers for students with disabilities.",F:"Implementing advanced technological infrastructure requires significant investment.",G:"Traditional standardized testing may soon become obsolete."},leftLabels:["A","B","C","D","E","F","G"],answer:"1234567",maxPoints:3,explanation:"A→1, B→2, C→3, D→4, E→5, F→6, G→7.",source:"Авторское задание"});
+BANK.questions.push({id:"S2-11",version:1,sectionId:"S2",role:"control",type:"match2",title:"Чтение: вставка пропусков (кофе)",instruction:"Заполните пропуски A-F частями предложений 1-7. Одна часть лишняя.",taskNumber:"11",text:"Coffee is one of the most popular drinks in the world, A ______. Legend has it that a goat herder noticed his goats became energetic after eating berries, B ______.\n\nBy the 15th century, coffee was being grown in Arabia, C ______. European travelers brought back stories of a strange black liquid, D ______.\n\nIn the 17th century, coffee made its way to Europe, E ______. Today, coffee is a global commodity, F ______.",options:["1. where it was initially viewed with suspicion","2. which led to the discovery of coffee","3. that is only grown in South America","4. which was used by priests to stay awake","5. and its history dates back centuries","6. supporting millions of farmers worldwide","7. and it quickly spread to the rest of the Middle East"],blanks:["A","B","C","D","E","F"],answer:"527416",maxPoints:2,explanation:"A→5, B→2, C→7, D→4, E→1, F→6.",source:"Авторское задание"});
+
+// Новые задания из учебника
+BANK.questions.push({id:"S2-12",version:1,sectionId:"S2",role:"practice",type:"match3",title:"Чтение: заголовки (коалы)",instruction:"Установите соответствие между текстами A-G и заголовками 1-8. Один заголовок лишний.",taskNumber:"10",statements:["1. A tricky diet?","2. Not for group work","3. Home, sweet home","4. In need of protection","5. What's in a name?","6. A nice toy for kids","7. Popular worldwide","8. Where did it come from?"],texts:{A:"Koalas are often referred to as 'koala bears,' but this is a mistake, as they are more closely related to kangaroos and possums than to true bears. There is only one species of koala in the world. Koalas are classified as marsupials. This is a different group of mammals, where females have a special pouch for rearing their young.",B:"The word 'koala' is thought to come from one of the Australian Aboriginal languages, Dharug, which roughly translates to 'no drink' or 'no water.' In the Australian forest, koalas rarely drink water, as the majority of their water intake comes from eating fresh eucalyptus leaves.",C:"70% of Australia is dry land. Therefore, most of the country's unique wildlife, including koalas, has had to adapt to living in dry environments. Koalas also live only in Australia. They can be found in the southeast and eastern parts of the country.",D:"Koalas may sleep for up to 18-20 hours every day, sitting safely in tree branches. Koalas are mostly nocturnal. Their extraordinary sleeping habit is believed to be an adaptation to their leaf-based diet, as they get little energy from eating leaves.",E:"Koalas are not social animals, preferring to live alone in the wild. Once young koalas become fully mature, they usually look for a new territory away from home and live in trees - with minimal social interaction.",F:"There are over 700 varieties of eucalyptus trees. Koalas eat only some of these. They are very fussy eaters and have strong preferences for different types of eucalyptus or gum leaves. The koala's digestive system is particularly good at tolerating eucalyptus leaves, which can often be poisonous to most animals.",G:"Habitat loss is the greatest threat to koalas. The main reasons for this are land clearing, bushfires, and diseases of eucalyptus trees. The Australian Koala Foundation states that there are less than 60,000 koalas left in Australia today."},leftLabels:["A","B","C","D","E","F","G"],answer:"5867213",maxPoints:3,explanation:"A→5, B→8, C→3, D→1, E→2, F→7, G→4. Лишний: 6.",source:"Учебник, Вариант 2, задание 10"});
+
+BANK.questions.push({id:"S2-13",version:1,sectionId:"S2",role:"practice",type:"match3",title:"Чтение: заголовки (роботы)",instruction:"Установите соответствие между текстами A-G и заголовками 1-8. Один заголовок лишний.",taskNumber:"10",statements:["1. What is a robot?","2. Robots in the future","3. Balance at work","4. Breaking stereotypes","5. The most famous ones?","6. Becoming smarter","7. The most advanced one?","8. Creative and unusual"],texts:{A:"Robots are machines that can automatically perform both simple and complex actions. They are often programmed by a computer, but there is no single definition of a robot. Robots include various machines, such as the giant arms used to make cars, automatic vacuum cleaners, humanoid machines that look like people, and even robotic dogs.",B:"As technology develops and gets more powerful, people start creating more advanced robots. In fact, some robots powered by artificial intelligence (AI) can have normal conversations. They can respond somewhat naturally to questions from humans, and carry out tasks on their own. AI is often used now to help robots 'learn' how to do their tasks.",C:"Most experts say there are three main classes of robots, and some additional types. Industrial robots are used in manufacturing and production lines. Collaborative robots work with humans. Mobile robots can navigate spaces to transport things in warehouses.",D:"The world's most human-like robot may be Ameca. Designed by Engineered Arts, Ameca has a body powered by air pressure but uses a squishy material for its human-like face. This allows Ameca to smile, frown or use other facial expressions when answering questions.",E:"One of the most popular real-world robots is probably Sophia. Sophia is a humanoid robot. Designed by Hanson Robotics, Sophia has impressive abilities. The robot can hold realistic conversations with people. Sophia has been interviewed on television several times.",F:"Robots have already replaced humans in some factories. For example, robots power production lines for making cars and other products. As more robots are used to build things, millions of people could lose their manufacturing jobs. At the same time, when more tasks become automatic, that usually leads to new jobs.",G:"Public opinion about robots is still quite negative. People often talk about bad social and economic effects of robots on society. One way to overcome the negative reactions people have towards robots and help them adapt to these new technologies is to foster the positive effect that robots could have on them."},leftLabels:["A","B","C","D","E","F","G"],answer:"5718463",maxPoints:3,explanation:"A→5, B→7, C→1, D→4, E→6, F→3, G→2. Лишний: 8.",source:"Учебник, Вариант 5, задание 10"});
+
+BANK.questions.push({id:"S2-14",version:1,sectionId:"S2",role:"practice",type:"match3",title:"Чтение: заголовки (бэкпэкеры)",instruction:"Установите соответствие между текстами A-G и заголовками 1-8. Один заголовок лишний.",taskNumber:"10",statements:["1. The same conversation","2. A five-minute friend","3. Know-it-all backpackers","4. Who is a better traveller?","5. Anti-social behaviour","6. Too much partying","7. Backpacking as a lifestyle","8. The herd mentality"],texts:{A:"Whenever you arrive somewhere new, travellers ask you five questions: Where are you from? Where are you going? Where have you been? How long are you travelling for? How long are you here? After five years - no, after the first five days - it's pretty boring having to talk about it over and over again.",B:"You meet great people - and then tomorrow they are gone. Maybe you will see each other again, maybe not. It's great meeting so many amazing people on the road, but I hate how everyone is always leaving, especially just as you get to know someone.",C:"In the backpacking world, it's always someone's first or last night and therefore a reason to go out - which means there's a lot of fun going on. I've done my fair share of celebrating, and I'll admit that it's great when you are just starting out. But after a few months, it gets boring and repetitive.",D:"There is always someone who has travelled more than you. Even after five years of backpacking the world, I know people who have spent six, seven, eight years with nothing but a backpack. However, I hate when without being asked people start to give their opinion about where others should or shouldn't go.",E:"I've been backpacking for over five years now. That's a long time to travel period, let alone stay in dorm rooms, live out of the same backpack, and travel on the cheap. Most days, I love this style of travel and I love backpacking. It's fun and social.",F:"I wanted to be a backpacker because they embodied a spirit of adventure and discovery. They were out to see the world, discover its hidden secrets, and meet new locals. Turns out, that's often not the case. More often than not, backpackers today follow the same well-laid travel route that thousands have used before them.",G:"Too many travellers like to talk themselves up by discussing how long they have travelled for or how many countries they have been to, as though travelling is a competition. They sew flags to their bags and backpacks from every country they've been to."},leftLabels:["A","B","C","D","E","F","G"],answer:"1572486",maxPoints:3,explanation:"A→1, B→2, C→6, D→3, E→7, F→8, G→4. Лишний: 5.",source:"Учебник, Вариант 6, задание 10"});
+
+BANK.questions.push({id:"S2-15",version:1,sectionId:"S2",role:"practice",type:"match3",title:"Чтение: заголовки (шоколад)",instruction:"Установите соответствие между текстами A-G и заголовками 1-8. Один заголовок лишний.",taskNumber:"10",statements:["1. Where is chocolate from?","2. Chocolate: nature risks","3. Better than believed","4. Chocolate: toxic","5. Not always healthy","6. Dark magic","7. New colour and taste","8. Tasty varieties"],texts:{A:"Chocolate is extracted from the fruit of the cacao tree, which grows exclusively in tropical climates. The cacao tree is native to Central and South America, but once European invaders discovered the delicacy in the 18th century, the popularity of chocolate took off, and farmers soon established plantations in other parts of the world.",B:"Historically, fine chocolate falls into three main categories: dark chocolate, milk chocolate and white chocolate. Dark chocolate is made with chocolate liquor, cocoa butter, lecithin, sugar and vanilla. Milk chocolate includes the same ingredients as dark chocolate plus milk fats and milk solids. White chocolate is made with the same ingredients as milk chocolate, except it does not include the chocolate liquor.",C:"For many years, physicians warned against eating too much chocolate - suggesting that its high fat content contributed to acne, caries, obesity, high blood pressure, heart disease and diabetes. However, in recent years, the discovery of antioxidant compounds in chocolate has changed this perception and stimulated research on its potential health benefits.",D:"Cocoa contains high levels of flavonoids, chemicals in plants that are known for their health benefits in humans. Dark chocolate contains especially high amounts of flavonoids, which may be the reason why chocolate consumption has been associated with a decreased risk of heart disease in recent years.",E:"Studies that have found beneficial health outcomes related to chocolate consumption have focused on the consumption of dark chocolate, which has less sugar and fat content than milk chocolate. In addition, the studies looked at moderate amounts of chocolate consumption. Like many foods, chocolate is healthiest when eaten in moderation.",F:"Recently, an up-to-date type of chocolate has been invented - ruby chocolate. This variety of chocolate joined the list in 2017. Barry Callebaut, the world's largest cocoa processing company, developed the pink-hued chocolate by adding a powder that is naturally extracted as cocoa beans are processed to make chocolate.",G:"It may be surprising but chocolate production can harm the environment. Farmers often clear forests to make room for cacao plantations. According to the World Wildlife Fund, about 70% of the Ivory Coast's illegal deforestation is related to cacao farming. One danger of deforestation is soil erosion."},leftLabels:["A","B","C","D","E","F","G"],answer:"8165237",maxPoints:3,explanation:"A→8, B→1, C→5, D→3, E→6, F→7, G→2. Лишний: 4.",source:"Учебник, Вариант 14, задание 10"});
+
+BANK.questions.push({id:"S2-16",version:1,sectionId:"S2",role:"practice",type:"match2",title:"Чтение: вставка пропусков (русская керамика)",instruction:"Заполните пропуски A-F частями предложений 1-7. Одна часть лишняя.",taskNumber:"11",text:"Russian ceramics\n\nCeramics are things made of fired clay with mineral components. They can be porcelain, faience, majolica, and pottery. Ceramic objects are created in the traditional way, A ______\n\nThe art of shaping and baking clay items appeared in Russia in the 10-13th centuries and it was widely spread two centuries later.\n\nSince the 18th century, Gzhel has become especially popular. Originally, Gzhel was the name of thirty villages not far from Moscow. It was a large ceramics centre. It still produces not only clay objects for kitchen use, B ______\n\nToday, Gzhel has great popularity all over the world. It is recognised at once C ______, typical designs and shapes.\n\nHere beautiful and attractive clay things are made. Clay figurines and tableware are always painted by hand D ______ Then, another layer of glaze is applied on top.\n\nThe modern Gzhel ceramics production is a new art E ______ of previous generations of potters.\n\nDecorative and floral painting can last practically forever, F ______",options:["1. that took the artistic and work experience","2. but also artistic and decorative items","3. but with an artist's individual style","4. that combine modern and old trends","5. by its blue-and-white colour pattern","6. as long as the glaze protects the painting","7. and decorated with the deep blue glaze"],blanks:["A","B","C","D","E","F"],answer:"325716",maxPoints:2,explanation:"A→3, B→2, C→5, D→7, E→1, F→6.",source:"Учебник, Вариант 3, задание 11"});
+
+BANK.questions.push({id:"S2-17",version:1,sectionId:"S2",role:"practice",type:"match2",title:"Чтение: вставка пропусков (Гренада)",instruction:"Заполните пропуски A-F частями предложений 1-7. Одна часть лишняя.",taskNumber:"11",text:"Spice Island\n\nGrenada offers a perfect taste of the Old Caribbean. Fragrant nutmeg, cinnamon, cloves, vanilla, and cocoa flourish in its fertile volcanic soil. That is why the island is often called the 'Spice Island'. The island's rich culture makes it a top choice for tourists A ______\n\nSt. George's is Grenada's capital. It is one of the prettiest cities in the Caribbean, with its busy harbour B ______\n\nMany visitors spend their time around Grand Anse Beach, C ______ in the Caribbean. Water colours range from clear turquoise in the shallows, to deep cobalt blue.\n\nCosta Rica is one of those rare countries D ______ the trip. What the country may lack in cultural attractions, it more than makes up for with interesting and prevalent wildlife experiences.\n\nOpportunities to see wildlife are numerous, E ______ with knowledgeable guides will improve the chances of seeing some of the more elusive species.\n\nSo, the Caribbean island of Grenada is an excellent holiday destination.",options:["1. as it does to surfers and backpackers","2. bustling with hundreds of sailboats","3. which is one of the best beaches","4. than booking one's trip in advance","5. than just sunbathing on its golden sands","6. but visiting parks or taking organized tours","7. and toucans rustle in the branches nearby"],blanks:["A","B","C","D","E","F"],answer:"712465",maxPoints:2,explanation:"A→7, B→1, C→2, D→4, E→6, F→5.",source:"Учебник, Вариант 11, задание 11"});
+
+BANK.questions.push({id:"S2-18",version:1,sectionId:"S2",role:"practice",type:"match2",title:"Чтение: вставка пропусков (Великая Китайская стена)",instruction:"Заполните пропуски A-F частями предложений 1-7. Одна часть лишняя.",taskNumber:"11",text:"Great Wall of China\n\n'Nobody can be a true hero unless he has been on the Great Wall' goes the popular Chinese saying. It clearly demonstrates the importance A ______\n\nThe magnificent Great Wall of China is known in Chinese as 'Changcheng', or the 'Long Wall'. The wall stretches more than 6,000 kilometres, from the fortresses of Shanhaiguan in the east, all the way to Jiayuguan in the west, passing through Hebei, Tientsin, and Beijing, B ______\n\nThe Great Wall of China rises as high as 16 metres, C ______ or 10 men to pass. The wall boasts numerous battlements and watchtowers.\n\nSome of the wall's oldest fortifications date back as far as the 7th century BC, with the best-known areas added around 210 BC, D ______\n\nToday, the most visited section of the wall is near Badaling Pass, northwest of Beijing, E ______\n\nTo conclude, the Great Wall of China is a must-visit attraction in China. The Great Wall is a building project F ______ in human lives, blood, sweat, and tears.",options:["1. and it is wide enough in places for five horses","2. when its various sections were joined together","3. that is placed upon this unique ancient monument","4. when the first fortifications of the wall appeared","5. which is easily reached by public transport","6. that had the longest duration and greatest cost","7. where the best-preserved sections can be visited"],blanks:["A","B","C","D","E","F"],answer:"371256",maxPoints:2,explanation:"A→3, B→7, C→1, D→2, E→5, F→6.",source:"Учебник, Вариант 12, задание 11"});
+
+BANK.questions.push({id:"S2-19",version:1,sectionId:"S2",role:"practice",type:"match2",title:"Чтение: вставка пропусков (история чая)",instruction:"Заполните пропуски A-F частями предложений 1-7. Одна часть лишняя.",taskNumber:"11",text:"From soup to liquid\n\nThe story of tea drinking could have started like this. Once upon a time the world was A ______ and those who drank it. Yet, the harsh truth is that before 700s no one even thought that tea could be anything else but soup.\n\nSometime in his adolescence, an up-and-coming writer and an accomplished clown, Lu Yu tasted tea soup for the first time. It happened in one of the Buddhist monasteries in Central China. Lu was B ______ as it contained ginger, onion, dates, mint and even citrus peels.\n\nIn fact, people in Asia ate tea leaves for millennia, but it was Lu Yu who made tea drinking the norm.\n\nLu Yu adored tea, but he preferred it brewed from C ______\n\nWhen he was not busy writing or performing in a comedy troupe, he was searching through the forests for the best tea leaves. He was preparing D ______ transforming tea from a soupy food into the perfect liquid we know it today.\n\nLu Yu even wrote a book titled the Tea Classic which spurred a craze for the leaf. In it he elaborated on the production and preparation of the leaf, E ______ and the wonderful qualities of the drink.",options:["1. extremely close to brewing fresh tea","2. the process of infusing tea leaves","3. divided between those who ate tea","4. the best brew for his wealthy friends","5. more than unimpressed with the brew","6. sharpening the mind and stimulating the body","7. powdered tea leaves, without any flavouring"],blanks:["A","B","C","D","E","F"],answer:"356742",maxPoints:2,explanation:"A→3, B→5, C→6, D→7, E→4, F→2.",source:"Учебник, Вариант 16, задание 11"});
+
+BANK.questions.push({id:"S2-20",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор (публичные выступления)",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"12",text:"The goal of the article as stated in paragraph 1 is to...",passage:"Snakes? Fine. Flying? No problem. Public speaking? Yikes! Just thinking about public speaking - routinely described as one of the greatest (and most common) fears - can make your palms sweat. However, there are many ways to tackle this anxiety and learn to deliver a memorable speech. Here, I'm providing you with public speaking tips that will help reduce your anxiety, dispel myths, and improve your performance.",options:["describe the most common fears.","explain how to avoid public speaking.","teach how to get rid of feeling worried.","share advice on becoming a better speaker."],answer:"4",maxPoints:1,explanation:"share advice on becoming a better speaker.",source:"Учебник, Вариант 2, задание 12"});
+BANK.questions.push({id:"S2-21",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"13",text:"What does the author say about feeling nervous?",passage:"To start with, nervousness is normal. All people feel some physiological reactions: like pounding hearts or trembling hands. Do not associate these feelings with the sense that you will perform poorly or make a fool of yourself. Some nerves are good. The adrenaline rush that makes you sweat also makes you more alert and ready to give your best performance.",options:["It is mostly because of criticism.","It can surely help you perform.","You can avoid it with a friend's help.","Some people experience it physically."],answer:"4",maxPoints:1,explanation:"Some people experience it physically.",source:"Учебник, Вариант 2, задание 13"});
+BANK.questions.push({id:"S2-22",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"14",text:"Which is NOT mentioned in the text as a result of learning about your audience?",passage:"Next, know your audience. Your speech is about them, not you. Before you begin to craft your message, consider who the message is intended for. Learn as much about your listeners as you can. This will help you determine your choice of words, level of information, organization pattern, and motivational statement.",options:["Your speech structure.","How you introduce yourself.","The difficulty level.","How you inspire the audience."],answer:"2",maxPoints:1,explanation:"How you introduce yourself is NOT mentioned.",source:"Учебник, Вариант 2, задание 14"});
+BANK.questions.push({id:"S2-23",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор (лексика)",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"15",text:"The description 'canned' in 'Delivering a canned speech' is closest in meaning to...",passage:"Keep your focus on the audience. Gauge their reactions, adjust your message, and stay flexible. Delivering a canned speech will guarantee that you lose the attention of or confuse even the most devoted listeners.",options:["unaltered.","recorded.","unprepared.","extended."],answer:"1",maxPoints:1,explanation:"canned = unaltered.",source:"Учебник, Вариант 2, задание 15"});
+BANK.questions.push({id:"S2-24",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"16",text:"What advice does the author give about reading the material?",passage:"A very common mistake is to read the material. Read it unless you have to, just work from an outline. Reading from a script or slide fractures the interpersonal connection. Maintaining eye contact with the audience, you keep the focus on yourself and your message. A brief outline can serve to jog your memory and keep you on task.",options:["It is impossible for a good speech.","Refer to a plan instead of reading.","Reading from a presentation is allowed.","It is OK to read some parts to keep focused."],answer:"2",maxPoints:1,explanation:"Refer to a plan instead of reading.",source:"Учебник, Вариант 2, задание 16"});
+BANK.questions.push({id:"S2-25",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"17",text:"Which is TRUE about non-verbal communication, according to the text?",passage:"Remember that non-verbals are as important as what you're saying, so use your voice and hands effectively, and omit nervous gestures. Non-verbal communication carries most of the message. Good delivery does not call attention to itself, but instead conveys the speaker's ideas clearly and without distraction.",options:["It is equally vital as the content of a speech.","A lot of non-verbals create a better connection.","Images always help a speaker to explain the message.","Gestures often distract the audience from your speech."],answer:"1",maxPoints:1,explanation:"It is equally vital as the content of a speech.",source:"Учебник, Вариант 2, задание 17"});
+BANK.questions.push({id:"S2-26",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"18",text:"What does the author mean by denying the proverb 'Practice makes perfect' in the last paragraph?",passage:"To sum up, practice does not make perfect - as good communication is never perfect, and nobody expects you to be perfect. However, putting in the requisite time to prepare will help you deliver a better speech. You may not be able to shake your nerves entirely, but you can learn to minimize them.",options:["Your speech is imperfect if you feel nervous.","You never have enough time for preparation.","Being perfect is not the goal of a good speaker.","Preparation does not guarantee a good speech."],answer:"3",maxPoints:1,explanation:"Being perfect is not the goal of a good speaker.",source:"Учебник, Вариант 2, задание 18"});
+
+BANK.questions.push({id:"S2-27",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор (эффективная коммуникация)",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"12",text:"The author's view on communication is that it is...",passage:"Every good leader has something to say. Yet, many of us don't take the time to polish and shape how we communicate those ideas to others, or consider how others may receive our message. Communication can be summed up as an exchange of information. Given the complex ways that we receive and perceive messages, however, this exchange is far from simple and straightforward.",options:["a simple exchange of ideas.","a complicated process.","close to a general talk.","about sending messages."],answer:"2",maxPoints:1,explanation:"a complicated process.",source:"Учебник, Вариант 3, задание 12"});
+BANK.questions.push({id:"S2-28",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"13",text:"Which method of practising listening skills is NOT mentioned in the text?",passage:"Most of us only remember about half of what we hear - no matter how carefully we think we're listening. But effective leadership requires good listening. You can improve your active listening by practising three simple techniques. First, get rid of the stereotypes you might have about the speaker's appearance or prior actions. Second, concentrate on what is being said, instead of thinking about your response. Finally, encourage the speaker to continue sharing information, by asking open-ended questions and nodding your head.",options:["Involve critical thinking.","Avoid your own fixed ideas.","Focus on the message heard.","Inquire more as you listen."],answer:"1",maxPoints:1,explanation:"Involve critical thinking is NOT mentioned.",source:"Учебник, Вариант 3, задание 13"});
+BANK.questions.push({id:"S2-29",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"14",text:"It is implied in the text that knowing your audience is important to...",passage:"The advice about knowing your audience can never be overstated. It's important for structuring your speech and inspiring your listeners. Figure out the level of knowledge and interest your listeners have in your topic. Do they have any preconceptions? Are they hostile, or friendly? Will they feel pressured to react in a specific way?",options:["speak to several people only.","choose sympathetic listeners.","plan gestures and other cues.","predict the listeners' response."],answer:"4",maxPoints:1,explanation:"predict the listeners' response.",source:"Учебник, Вариант 3, задание 14"});
+BANK.questions.push({id:"S2-30",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"15",text:"The example with 'dog' in paragraph 4 shows that...",passage:"Words are powerful - they carry a literal as well as a connotative (additional) meaning. For example, 'dog' is a neutral word. But 'mongrel' carries a negative connotation, while 'man's best friend' carries a positive one. Also, some words mean different things in various parts of the world, such as football, which is called soccer in the USA.",options:["one thing is called differently in different parts of the world.","it is possible to use different words to express your attitude.","it is preferable to choose words without negative connotations.","pronouncing words correctly is crucial for understanding."],answer:"2",maxPoints:1,explanation:"it is possible to use different words to express your attitude.",source:"Учебник, Вариант 3, задание 15"});
+BANK.questions.push({id:"S2-31",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"16",text:"Which is FALSE about good communication tips, according to the author?",passage:"A few other tips to consider when formulating your message include clarity, and vivid language. For clarity, choose concrete, familiar words that refer to tangible objects. Avoid using more words than necessary to express an idea - be concise. By vivid language, I mean imagery, which is really memorable. So be sure to use descriptive language - such as colour, size, and shape - to create mental images of objects, actions, or ideas.",options:["It is advisable to describe characteristics of objects or actions.","Putting words together in a special way creates additional effect.","The more words and details you use, the clearer your speech will be.","It is better to use simpler words that the audience can easily understand."],answer:"3",maxPoints:1,explanation:"The more words and details you use, the clearer your speech will be — это FALSE.",source:"Учебник, Вариант 3, задание 16"});
+BANK.questions.push({id:"S2-32",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"17",text:"The expression 'these language tools' most probably refers to...",passage:"Select lively verbs, and speak in an active voice. Your choice and arrangement of words create a pattern of sounds. There are many ways to consider when it comes to establishing rhythm: repetition of words, initial sounds, or words having sounds similar to the noises they describe. For maximum effect, use these language tools sparingly - overuse may sound pretentious.",options:["creating images that are easy to remember.","changing your voice characteristics.","selecting words with special sounds.","using lively active verbs most of the time."],answer:"3",maxPoints:1,explanation:"selecting words with special sounds.",source:"Учебник, Вариант 3, задание 17"});
+BANK.questions.push({id:"S2-33",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"18",text:"What does the author mean by saying that 'communication is fluid' in the last paragraph?",passage:"Most audiences prefer a delivery that combines a certain degree of formality with the best attributes of good conversation. And remember: communication is fluid. Putting in the work beforehand to organize your ideas and understand your audience will make you a better speaker, but you must listen to your audience and adapt to their feedback as well.",options:["The speaker should be flexible during delivery.","You never know what to expect from listeners.","Good preparation is the recipe for good communication.","How you structure your ideas in speech is very important."],answer:"1",maxPoints:1,explanation:"The speaker should be flexible during delivery.",source:"Учебник, Вариант 3, задание 18"});
+
+BANK.questions.push({id:"S2-34",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор (завтрак)",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"12",text:"The author says that breakfast in the UK is usually...",passage:"Breakfast has become 'very, very limited' in the UK, says Ben Smith, Professor of Genetic Epidemiology and author of famous books about food. In some cultures, breakfast is often 'leftovers or similar to foods you would have for lunch and dinner,' says medical doctor Ayn Raynia.",options:["the same as lunch or dinner.","treated as important.","small in amount.","made up of egg dishes."],answer:"3",maxPoints:1,explanation:"small in amount.",source:"Учебник, Вариант 5, задание 12"});
+BANK.questions.push({id:"S2-35",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"13",text:"According to paragraph 3, it is very important...",passage:"Eating a healthy breakfast isn't just about picking one dish that's packed with plant foods and healthy fats. It's important to vary what you eat over a week, as the more variety there is in your diet, the better it is for your gut bacteria.",options:["what food you choose.","when you eat breakfast.","to have diverse food.","to eat a little and regularly."],answer:"3",maxPoints:1,explanation:"to have diverse food.",source:"Учебник, Вариант 5, задание 13"});
+BANK.questions.push({id:"S2-36",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"14",text:"What can be inferred from Professor Smith's advice on the time for breakfast?",passage:"Does the time you eat breakfast affect your health? 'Some people are programmed to prefer eating earlier in the day, and others later, which might suit our unique personal metabolism,' says Professor Smith. 'We need to move away from this one size-fits-all advice,' he continues.",options:["The earlier you eat, the better you feel.","It is different for different people.","Breakfast time greatly affects health.","It depends on your own preferences."],answer:"2",maxPoints:1,explanation:"It is different for different people.",source:"Учебник, Вариант 5, задание 14"});
+BANK.questions.push({id:"S2-37",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"15",text:"How does the night gap between meals affect your health, according to the text?",passage:"Smith advises leaving 12-14 hours between your last meal of the day and your first meal the following day, to benefit your gut bacteria. This might mean an early dinner with a morning breakfast, or an evening dinner with breakfast pushed back or skipped. 'Our thinking is that it allows a whole repair team to come out that don't eat your food, but clean up the debris from the night before.'",options:["It should be long enough for our body bacteria to work inside.","Early dinner and late breakfast destroy our immune system.","It is recommended to avoid having meals late at night.","The more the gap is, the more harmful bacteria will develop."],answer:"1",maxPoints:1,explanation:"It should be long enough for our body bacteria to work inside.",source:"Учебник, Вариант 5, задание 15"});
+BANK.questions.push({id:"S2-38",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор (лексика)",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"16",text:"The expression 'pushed back' is closest in meaning to...",passage:"This might mean an early dinner with a morning breakfast, or an evening dinner with breakfast pushed back or skipped.",options:["cancelled.","in a hurry.","limited.","at a later time."],answer:"4",maxPoints:1,explanation:"at a later time.",source:"Учебник, Вариант 5, задание 16"});
+BANK.questions.push({id:"S2-39",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"17",text:"Which is NOT mentioned as a possible result of missing breakfast?",passage:"But are there health implications to skipping breakfast? Intermittent fasting or skipping meals doesn't suit everyone, with reported side effects such as feeling dizzy, irritable, headaches, and having difficulty concentrating.",options:["Increased annoyance.","Developing bad habits.","Experiencing pain.","Problems with attention."],answer:"2",maxPoints:1,explanation:"Developing bad habits is NOT mentioned.",source:"Учебник, Вариант 5, задание 17"});
+BANK.questions.push({id:"S2-40",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"18",text:"The main purpose of the article is to...",passage:"For me breakfast is a must. I like how one of my favourite neurologists put it: 'When you eat breakfast, you're telling your body that there are plenty of calories to be had for the day. When you skip breakfast, the message your body gets is that it needs to conserve rather than burn any incoming calories.'",options:["show a variety of possible breakfast options.","describe the effects of having or missing breakfast.","encourage the readers to have an early breakfast.","explain how breakfast has changed over years."],answer:"2",maxPoints:1,explanation:"describe the effects of having or missing breakfast.",source:"Учебник, Вариант 5, задание 18"});
+
+BANK.questions.push({id:"S2-41",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор (солнечная энергия)",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"12",text:"Installing solar panels in the author's home was...",passage:"My parents chose to buy and install solar panels on our home. The process was absolutely painless. Our bill just after this first month was $100 less than we budgeted for, which, needless to say, is very nice.",options:["very easy.","quite useless.","rather costly.","a bit hard."],answer:"1",maxPoints:1,explanation:"very easy.",source:"Учебник, Вариант 6, задание 12"});
+BANK.questions.push({id:"S2-42",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"13",text:"Which benefit of solar energy is NOT mentioned in paragraph 2?",passage:"Solar power produces no harmful emissions to the environment. In addition to being eco-friendly, solar energy is renewable, abundant, sustainable, not needing much effort or money, and always improving. For as long as the sun is alive, it is possible for us to get solar energy, so we should use it.",options:["It's good for the nature.","It is rather cost-efficient.","It improves home design.","It can continue for long."],answer:"3",maxPoints:1,explanation:"It improves home design is NOT mentioned.",source:"Учебник, Вариант 6, задание 13"});
+BANK.questions.push({id:"S2-43",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"14",text:"How do big companies like Google promote renewable energy, according to the author?",passage:"With major companies such as Google and Amazon using it, solar energy is earning its place in the sun. Renewable energy (solar power, wind power, etc.) has gone up in the U.S. energy mix greatly over the past 10 years. Because big businesses are taking advantage of solar energy, many of their suppliers have gone down the same path.",options:["They provide a model for other companies.","They select partners who use renewable energy.","Their customers are influenced by their views.","Their energy use has decreased considerably."],answer:"1",maxPoints:1,explanation:"They provide a model for other companies.",source:"Учебник, Вариант 6, задание 14"});
+BANK.questions.push({id:"S2-44",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор (лексика)",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"15",text:"The expression 'puts you in the driver's seat' is closest in meaning to...",passage:"While the cost of solar has decreased by more than 70% in the past decade, the cost of electricity has risen by about 5%, and that trend in rising electric cost is expected to continue. Going solar puts you in the driver's seat when it comes to energy generation.",options:["decrease your spending.","determine where you go.","make you independent in energy.","follow the energy trends."],answer:"3",maxPoints:1,explanation:"make you independent in energy.",source:"Учебник, Вариант 6, задание 15"});
+BANK.questions.push({id:"S2-45",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"16",text:"Accommodation with solar panels is...",passage:"Using solar power at colleges is certainly beneficial to the environment, but it would also be advantageous to the households themselves. The average home sale price increases if solar panels are included. A study concludes that 'homes with solar panels sell 20% faster and for 17% more money'.",options:["less popular.","more expensive.","difficult to find.","harder to build."],answer:"2",maxPoints:1,explanation:"more expensive.",source:"Учебник, Вариант 6, задание 16"});
+BANK.questions.push({id:"S2-46",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"17",text:"According to the text, if colleges use solar energy only,",passage:"For colleges, investing in clean-energy projects would be a large pull for many students. As a generation highly affected by climate change, young people are interested in making a difference. A survey found that almost half of young people think climate change and the destruction of nature is the most critical issue.",options:["they will need to fill residence halls to their maximum.","students would pay much more for accommodation.","it will help to change students' views on climate change.","they will become more attractive for new students."],answer:"4",maxPoints:1,explanation:"they will become more attractive for new students.",source:"Учебник, Вариант 6, задание 17"});
+BANK.questions.push({id:"S2-47",version:1,sectionId:"S2",role:"practice",type:"number1",title:"Чтение: множественный выбор",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"18",text:"The author thinks that the future of solar energy...",passage:"With its benefits rapidly multiplying for all parties involved in its use, it is solar energy's time to shine.",options:["depends on authorities.","is unpredictable in general.","determines our fate.","is rather optimistic."],answer:"4",maxPoints:1,explanation:"is rather optimistic.",source:"Учебник, Вариант 6, задание 18"});
+
+// ===== S3. ГРАММАТИКА И ЛЕКСИКА (23 задания) =====
+BANK.questions.push({id:"S3-01",version:1,sectionId:"S3",role:"diagnostic",type:"cloze",title:"Грамматика: словообразование (загадочные места)",instruction:"Преобразуйте слова заглавными буквами так, чтобы они грамматически соответствовали содержанию текста.",taskNumber:"19-24",text:"Mysterious places in Russia\n\nRussia has a lot of mysterious places. One of them is Karandash, which means a pencil in Russian. It is a small mountain in the southern Urals. Despite being only 610 metres tall, it is very important for scientists because it holds the title of being the (19) ______ mountain in the world.\nOLD\n\nIt (20) ______ to be about 4.2 billion years old whereas our planet is about 4.75 billion years old.\nBELIEVE\n\nSo far, scientists (21) ______ some interesting minerals in Karandash which prove that this mountain used to be a part of the supercontinent that existed 2 billion years ago.\nFIND\n\nAnother place is Manpupunyor. It may be hard to pronounce the name of this mysterious plateau, but this place is one of the top attractions of Russia for curious tourists.\n\nThe name of the plateau is translated from a local language as The Small Mountain of Idols. Six rock formations from 30 to 42 meters tall stand in a row, while the (22) ______ one stands alone.\nSEVEN\n\nAccording to a legend, (23) ______ seven rocks were giant men who wanted to conquer the locals.\nTHIS\n\nHowever, they (24) ______ into stones by a shaman ages ago.\nTURN",blanks:[{label:"19",prompt:"OLD"},{label:"20",prompt:"BELIEVE"},{label:"21",prompt:"FIND"},{label:"22",prompt:"SEVEN"},{label:"23",prompt:"THIS"},{label:"24",prompt:"TURN"}],acceptedAnswers:[["oldest","OLDEST"],["isbelieved","sbelieved","is believed","s believed","ISBELIEVED","SBELIEVED","IS BELIEVED","S BELIEVED"],["havefound","vefound","have found","ve found","HAVEFOUND","VEFOUND","HAVE FOUND","VE FOUND"],["seventh","SEVENTH"],["these","THESE"],["wereturned","were turned","WERETURNED","WERE TURNED"]],maxPoints:6,explanation:"19=oldest, 20=is believed, 21=have found, 22=seventh, 23=these, 24=were turned.",source:"Демо ЕГЭ 2026, задания 19-24"});
+BANK.questions.push({id:"S3-02",version:1,sectionId:"S3",role:"diagnostic",type:"cloze",title:"Лексика: словообразование (библиотеки)",instruction:"Образуйте однокоренные слова от слов заглавными буквами.",taskNumber:"25-29",text:"From the history of libraries\n\nThe first libraries appeared in around 2600 BC in Sumer. There were no paper books at that time, people used clay tablets.\n\nThey were stored in (25) ______ in special rooms.\nCONTAIN\n\nSuch rooms were (26) ______ located in temples.\nUSUAL\n\nHowever, more and more information needed to be stored, that is why people decided they needed separate (27) ______ for the clay tablets and later for manuscripts.\nBUILD\n\nAround 500 BC libraries stored not only (28) ______ orders and records, but also works on mathematics, history, astronomy, philosophy and medicine.\nGOVERN\n\nLibraries of the ancient Roman Empire had (29) ______ manuscripts of the best scholars of that time, so an early form of a catalogue system was introduced and librarians were needed.\nCOUNT",blanks:[{label:"25",prompt:"CONTAIN"},{label:"26",prompt:"USUAL"},{label:"27",prompt:"BUILD"},{label:"28",prompt:"GOVERN"},{label:"29",prompt:"COUNT"}],acceptedAnswers:[["containers","CONTAINERS"],["usually","USUALLY"],["buildings","BUILDINGS"],["government","governmental","GOVERNMENT","GOVERNMENTAL"],["countless","COUNTLESS"]],maxPoints:5,explanation:"25=containers, 26=usually, 27=buildings, 28=government, 29=countless.",source:"Демо ЕГЭ 2026, задания 25-29"});
+
+BANK.questions.push({id:"S3-03",version:1,sectionId:"S3",role:"practice",type:"number1",title:"Лексика: выбор слова",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"30",text:"Sandy called Dan Atkins the following week, to give Berta Canning, her literary agent, plenty of time to get in touch with him and send him the manuscript he could read. She hoped he would (30) ______ to help her to edit her first book.",options:["assume","admit","approve","agree"],answer:"4",maxPoints:1,explanation:"agree to do smth.",source:"Демо ЕГЭ 2026, задание 30"});
+BANK.questions.push({id:"S3-04",version:1,sectionId:"S3",role:"practice",type:"number1",title:"Лексика: выбор слова",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"31",text:"And when Dan Atkins answered, he seemed as though she had woken him out of a sound sleep. She (31) ______ profusely, and he did not sound happy to hear from her.",options:["apologized","appeared","applied","approached"],answer:"1",maxPoints:1,explanation:"apologized profusely.",source:"Демо ЕГЭ 2026, задание 31"});
+BANK.questions.push({id:"S3-05",version:1,sectionId:"S3",role:"practice",type:"number1",title:"Лексика: выбор слова",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"32",text:"He explained that he lived near the university campus where he (32) ______ to teach.",options:["held","took","kept","used"],answer:"4",maxPoints:1,explanation:"used to teach.",source:"Демо ЕГЭ 2026, задание 32"});
+BANK.questions.push({id:"S3-06",version:1,sectionId:"S3",role:"practice",type:"number1",title:"Лексика: выбор слова",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"33",text:"When Sandy got there, he took forever to answer the bell. She was (33) ______ about to leave when he opened the door.",options:["yet","just","still","only"],answer:"2",maxPoints:1,explanation:"was just about to leave.",source:"Демо ЕГЭ 2026, задание 33"});
+BANK.questions.push({id:"S3-07",version:1,sectionId:"S3",role:"practice",type:"number1",title:"Лексика: выбор слова",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"34",text:"He had a long, unkempt beard, a mane of wild white hair that (34) ______ Sally of Albert Einstein.",options:["reminded","regarded","recognized","remembered"],answer:"1",maxPoints:1,explanation:"remind smb of smb.",source:"Демо ЕГЭ 2026, задание 34"});
+BANK.questions.push({id:"S3-08",version:1,sectionId:"S3",role:"practice",type:"number1",title:"Лексика: выбор слова",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"35",text:"Sandy could (35) ______ figure out his age. He seemed to be about seventy...",options:["really","rarely","hardly","nearly"],answer:"3",maxPoints:1,explanation:"could hardly figure out.",source:"Демо ЕГЭ 2026, задание 35"});
+BANK.questions.push({id:"S3-09",version:1,sectionId:"S3",role:"practice",type:"number1",title:"Лексика: выбор слова",instruction:"Запишите цифру 1, 2, 3 или 4.",taskNumber:"36",text:"He seemed to be about seventy, (36) ______ Berta told her later that he was only sixty.",options:["nevertheless","therefore","although","moreover"],answer:"3",maxPoints:1,explanation:"although.",source:"Демо ЕГЭ 2026, задание 36"});
+
+BANK.questions.push({id:"S3-10",version:1,sectionId:"S3",role:"control",type:"cloze",title:"Грамматика: словообразование (космос)",instruction:"Преобразуйте слова заглавными буквами.",taskNumber:"19-24",text:"Space Exploration\n\nSpace exploration has always fascinated humanity. The (19) ______ person to walk on the moon was Neil Armstrong in 1969.\nONE\n\nSince then, space (20) ______ by many nations and private companies.\nEXPLORE\n\nRobots (21) ______ to Mars recently to collect soil samples.\nSEND\n\nThere are (22) ______ challenges today than in the past, but technology helps us overcome them.\nMANY\n\nScientists believe that (23) ______ challenges can be solved with international cooperation.\nTHIS\n\nIf we (24) ______ careful, we will discover new worlds.\nBE",blanks:[{label:"19",prompt:"ONE"},{label:"20",prompt:"EXPLORE"},{label:"21",prompt:"SEND"},{label:"22",prompt:"MANY"},{label:"23",prompt:"THIS"},{label:"24",prompt:"BE"}],acceptedAnswers:[["first","FIRST"],["isexplored","is explored","hasbeenexplored","has been explored","ISEXPLORED","IS EXPLORED","HASBEENEXPLORED","HAS BEEN EXPLORED"],["havebeensent","have been sent","weresent","were sent","HAVEBEENSENT","HAVE BEEN SENT","WERESENT","WERE SENT"],["more","MORE"],["these","THESE"],["are","ARE"]],maxPoints:6,explanation:"19=first, 20=is explored, 21=have been sent, 22=more, 23=these, 24=are.",source:"Авторское задание"});
+BANK.questions.push({id:"S3-11",version:1,sectionId:"S3",role:"control",type:"cloze",title:"Лексика: словообразование (здоровье)",instruction:"Образуйте однокоренные слова.",taskNumber:"25-29",text:"Healthy Lifestyle\n\nMaintaining a (25) ______ lifestyle is crucial for long-term well-being.\nHEALTH\n\nThe (26) ______ of regular exercise cannot be overstated.\nIMPORTANT\n\nDaily physical (27) ______ helps to prevent chronic diseases.\nACTIVE\n\nThere are (28) ______ ways to stay fit, from swimming to cycling.\nVARY\n\nUltimately, it builds both physical and mental (29) ______.\nSTRONG",blanks:[{label:"25",prompt:"HEALTH"},{label:"26",prompt:"IMPORTANT"},{label:"27",prompt:"ACTIVE"},{label:"28",prompt:"VARY"},{label:"29",prompt:"STRONG"}],acceptedAnswers:[["healthy","HEALTHY"],["importance","IMPORTANCE"],["activity","ACTIVITY"],["various","VARIOUS"],["strength","STRENGTH"]],maxPoints:5,explanation:"25=healthy, 26=importance, 27=activity, 28=various, 29=strength.",source:"Авторское задание"});
+BANK.questions.push({id:"S3-12",version:1,sectionId:"S3",role:"control",type:"cloze",title:"Грамматика: словообразование (ИИ)",instruction:"Преобразуйте слова заглавными буквами.",taskNumber:"19-24",text:"Artificial Intelligence\n\nAI is one of the (19) ______ growing fields in modern science.\nFAST\n\nIt (20) ______ in many industries today, from healthcare to finance.\nUSE\n\nBy 2030, AI (21) ______ the way we work and communicate.\nCHANGE\n\nSome people are (22) ______ concerned about it than others.\nMUCH\n\nHowever, (23) ______ concerns are often exaggerated by the media.\nTHIS\n\nIf we (24) ______ it properly, it will be a safe and useful tool.\nREGULATE",blanks:[{label:"19",prompt:"FAST"},{label:"20",prompt:"USE"},{label:"21",prompt:"CHANGE"},{label:"22",prompt:"MUCH"},{label:"23",prompt:"THIS"},{label:"24",prompt:"REGULATE"}],acceptedAnswers:[["fastest","FASTEST"],["isused","is used","ISUSED","IS USED"],["willchange","will change","WILLCHANGE","WILL CHANGE"],["more","MORE"],["these","THESE"],["regulate","REGULATE"]],maxPoints:6,explanation:"19=fastest, 20=is used, 21=will change, 22=more, 23=these, 24=regulate.",source:"Авторское задание"});
+BANK.questions.push({id:"S3-13",version:1,sectionId:"S3",role:"control",type:"cloze",title:"Лексика: словообразование (экология)",instruction:"Образуйте однокоренные слова.",taskNumber:"25-29",text:"Environmental Protection\n\nThe (25) ______ crisis is a global issue that requires immediate action.\nENVIRONMENT\n\nThe (26) ______ of nature is a shared responsibility of all countries.\nPROTECT\n\nAir and water (27) ______ are major threats to ecosystems worldwide.\nPOLLUTE\n\nRaising public (28) ______ is the first step towards meaningful change.\nAWARE\n\nEveryone must take (29) ______ for their daily actions and consumption habits.\nRESPONSIBLE",blanks:[{label:"25",prompt:"ENVIRONMENT"},{label:"26",prompt:"PROTECT"},{label:"27",prompt:"POLLUTE"},{label:"28",prompt:"AWARE"},{label:"29",prompt:"RESPONSIBLE"}],acceptedAnswers:[["environmental","ENVIRONMENTAL"],["protection","PROTECTION"],["pollution","POLLUTION"],["awareness","AWARENESS"],["responsibility","RESPONSIBILITY"]],maxPoints:5,explanation:"25=environmental, 26=protection, 27=pollution, 28=awareness, 29=responsibility.",source:"Авторское задание"});
+
+// ===== СОСТОЯНИЕ =====
+var STATE = null;
+
+function newProfile() {
+  return {
+    bankVersion: BANK.bankVersion,
+    attempts: {},
+    currentSession: null,
+    lastTrainingPlan: null
+  };
+}
+
+function loadState() {
+  try {
+    var raw = localStorage.getItem(LS_KEY);
+    if (raw) {
+      STATE = JSON.parse(raw);
+      if (STATE.bankVersion !== BANK.bankVersion) {
+        STATE = newProfile();
+      }
+    } else {
+      STATE = newProfile();
+    }
+  } catch (e) {
+    storageAvailable = false;
+    STATE = newProfile();
+  }
+}
+
+function saveState() {
+  if (!storageAvailable) return;
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(STATE));
+  } catch (e) {}
+}
+
+// ===== РАСЧЁТ РЕЗУЛЬТАТОВ =====
+function computeSectionScores() {
+  var scores = {};
+  for (var s = 0; s < BANK.sections.length; s++) {
+    var sec = BANK.sections[s];
+    var earned = 0, max = 0, count = 0;
+    for (var i = 0; i < BANK.questions.length; i++) {
+      var q = BANK.questions[i];
+      if (q.sectionId === sec.id && (q.role === 'diagnostic' || q.role === 'control')) {
+        if (STATE.attempts[q.id] && STATE.attempts[q.id].length > 0) {
+          var last = STATE.attempts[q.id][STATE.attempts[q.id].length - 1];
+          earned += last.points;
+          max += q.maxPoints;
+          count++;
+        }
+      }
+    }
+    scores[sec.id] = {
+      earned: earned,
+      max: max,
+      count: count,
+      percent: max > 0 ? Math.round(100 * earned / max) : null
+    };
+  }
+  return scores;
+}
+
+// ===== ПОДБОР ТРЕНИРОВКИ =====
+function allocateByLargestRemainder(P, N) {
+  var total = 0;
+  var keys = Object.keys(P);
+  for (var i = 0; i < keys.length; i++) total += P[keys[i]];
+  if (total === 0) {
+    var out = {};
+    for (var i = 0; i < keys.length; i++) out[keys[i]] = 0;
+    return out;
+  }
+  var exact = {}, floors = {}, sumFloor = 0, remainders = {};
+  for (var i = 0; i < keys.length; i++) {
+    var k = keys[i];
+    exact[k] = (P[k] / total) * N;
+    floors[k] = Math.floor(exact[k]);
+    remainders[k] = exact[k] - floors[k];
+    sumFloor += floors[k];
+  }
+  var left = N - sumFloor;
+  var sorted = keys.slice().sort(function(a, b) {
+    var diff = remainders[b] - remainders[a];
+    if (Math.abs(diff) > 0.0001) return diff;
+    return a.localeCompare(b);
+  });
+  var result = {};
+  for (var i = 0; i < keys.length; i++) result[keys[i]] = floors[keys[i]];
+  for (var i = 0; i < sorted.length; i++) {
+    if (left <= 0) break;
+    var k = sorted[i];
+    var pool = BANK.questions.filter(function(q) { return q.sectionId === k && q.role === 'practice'; });
+    if (result[k] < pool.length) { result[k]++; left--; }
+  }
+  while (left > 0) {
+    var added = false;
+    for (var i = 0; i < sorted.length; i++) {
+      if (left <= 0) break;
+      var k = sorted[i];
+      var pool = BANK.questions.filter(function(q) { return q.sectionId === k && q.role === 'practice'; });
+      if (result[k] < pool.length) { result[k]++; left--; added = true; }
+    }
+    if (!added) break;
+  }
+  return result;
+}
+
+function selectPracticeQuestions(sectionId, need) {
+  var pool = BANK.questions.filter(function(q) { return q.sectionId === sectionId && q.role === 'practice'; });
+  var newOnes = [], wrongOnes = [], others = [];
+  for (var i = 0; i < pool.length; i++) {
+    var q = pool[i];
+    var attempts = STATE.attempts[q.id];
+    if (!attempts || attempts.length === 0) {
+      newOnes.push(q);
+    } else {
+      var last = attempts[attempts.length - 1];
+      if (last.points < q.maxPoints) wrongOnes.push(q);
+      else others.push(q);
+    }
+  }
+  var ordered = newOnes.concat(wrongOnes).concat(others);
+  return ordered.slice(0, need).map(function(q) { return q.id; });
+}
+
+// ===== КОЛЕСО =====
+function drawWheel(mount, scores) {
+  var sections = BANK.sections;
+  var n = sections.length;
+  var size = 420, cx = size / 2, cy = size / 2, R = 150;
+  var angles = [];
+  for (var i = 0; i < n; i++) angles.push(-Math.PI / 2 + (2 * Math.PI * i) / n);
+  var svg = '<svg viewBox="0 0 ' + size + ' ' + size + '" width="100%" style="max-width:' + size + 'px;display:block;margin:0 auto">';
+  for (var k = 1; k <= 5; k++) {
+    var r = R * k / 5;
+    svg += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#d8d8d8" stroke-width="0.5"/>';
+  }
+  for (var i = 0; i < n; i++) {
+    var a = angles[i];
+    svg += '<line x1="' + cx + '" y1="' + cy + '" x2="' + (cx + R * Math.cos(a)) + '" y2="' + (cy + R * Math.sin(a)) + '" stroke="#d8d8d8" stroke-width="0.5"/>';
+  }
+  var points = [];
+  for (var i = 0; i < n; i++) {
+    var sec = sections[i];
+    var sc = scores[sec.id];
+    var pct = (sc.percent !== null) ? sc.percent / 100 : 0;
+    points.push({ x: cx + R * pct * Math.cos(angles[i]), y: cy + R * pct * Math.sin(angles[i]), pct: pct });
+  }
+  var path = catmullRomClosed(points);
+  svg += '<path d="' + path + '" fill="#c6ef4e" stroke="none" opacity="0.9"/>';
+  for (var i = 0; i < n; i++) {
+    var a = angles[i];
+    svg += '<line x1="' + cx + '" y1="' + cy + '" x2="' + (cx + R * Math.cos(a)) + '" y2="' + (cy + R * Math.sin(a)) + '" stroke="#888" stroke-width="0.8"/>';
+  }
+  for (var i = 0; i < n; i++) {
+    var px = cx + R * Math.cos(angles[i]);
+    var py = cy + R * Math.sin(angles[i]);
+    svg += '<circle cx="' + px + '" cy="' + py + '" r="3" fill="#000"/>';
+  }
+  var labelOffset = 30;
+  for (var i = 0; i < n; i++) {
+    var sec = sections[i];
+    var sc = scores[sec.id];
+    var a = angles[i];
+    var lx = cx + (R + labelOffset) * Math.cos(a);
+    var ly = cy + (R + labelOffset) * Math.sin(a);
+    var anchor = 'middle';
+    if (Math.abs(Math.cos(a)) >= 0.1) anchor = (Math.cos(a) > 0) ? 'start' : 'end';
+    var pctText = (sc.percent !== null) ? sc.percent + '%' : 'не проверен';
+    var pctColor = (sc.percent !== null) ? '#000' : '#888';
+    svg += '<text x="' + lx + '" y="' + (ly - 6) + '" text-anchor="' + anchor + '" font-size="11" fill="#5f6258" font-family="sans-serif">' + escapeXml(sec.short) + '</text>';
+    svg += '<text x="' + lx + '" y="' + (ly + 12) + '" text-anchor="' + anchor + '" font-size="18" font-weight="700" fill="' + pctColor + '" font-family="sans-serif">' + pctText + '</text>';
+  }
+  svg += '</svg>';
+  mount.innerHTML = svg;
+}
+
+function catmullRomClosed(points) {
+  var n = points.length;
+  if (n < 3) return '';
+  var d = '';
+  for (var i = 0; i < n; i++) {
+    var p0 = points[(i - 1 + n) % n];
+    var p1 = points[i];
+    var p2 = points[(i + 1) % n];
+    var p3 = points[(i + 2) % n];
+    var cp1x = p1.x + (p2.x - p0.x) / 6;
+    var cp1y = p1.y + (p2.y - p0.y) / 6;
+    var cp2x = p2.x - (p3.x - p1.x) / 6;
+    var cp2y = p2.y - (p3.y - p1.y) / 6;
+    if (i === 0) d += 'M ' + p1.x.toFixed(2) + ' ' + p1.y.toFixed(2) + ' ';
+    d += 'C ' + cp1x.toFixed(2) + ' ' + cp1y.toFixed(2) + ', ' + cp2x.toFixed(2) + ' ' + cp2y.toFixed(2) + ', ' + p2.x.toFixed(2) + ' ' + p2.y.toFixed(2) + ' ';
+  }
+  d += 'Z';
+  return d;
+}
+
+function escapeXml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// ===== АУДИОПЛЕЕР =====
+function renderAudioPlayer(container, q) {
+  if (!q.audioFile) return;
+  var player = document.createElement('div');
+  player.className = 'audio-player';
+  var audio = document.createElement('audio');
+  audio.controls = true;
+  audio.preload = 'metadata';
+  audio.src = q.audioFile;
+  var errorShown = false;
+  audio.addEventListener('error', function() {
+    if (errorShown) return;
+    errorShown = true;
+    var errBox = document.createElement('div');
+    errBox.className = 'audio-error';
+    errBox.innerHTML = '<strong>⚠ Аудиофайл недоступен:</strong> ' + escapeHtml(q.audioFile) + '<br>Проверьте, что файл лежит рядом с HTML. Ниже доступна текстовая расшифровка.';
+    player.appendChild(errBox);
+    showTranscriptButton(player, q);
+  });
+  player.appendChild(audio);
+  var hint = document.createElement('div');
+  hint.className = 'audio-hint';
+  hint.textContent = '🎧 В реальном ЕГЭ запись звучит дважды. Вы можете прослушать аудио несколько раз.';
+  player.appendChild(hint);
+  var toggleBtn = document.createElement('button');
+  toggleBtn.className = 'toggle-text';
+  toggleBtn.textContent = '📖 Показать текстовую расшифровку (для самопроверки)';
+  toggleBtn.style.display = 'none';
+  toggleBtn.addEventListener('click', function() {
+    var transcript = document.getElementById('transcript-' + q.id);
+    if (transcript) {
+      if (transcript.style.display === 'none') {
+        transcript.style.display = 'block';
+        toggleBtn.textContent = '📖 Скрыть текстовую расшифровку';
+      } else {
+        transcript.style.display = 'none';
+        toggleBtn.textContent = '📖 Показать текстовую расшифровку (для самопроверки)';
+      }
+    }
+  });
+  player.appendChild(toggleBtn);
+  container.appendChild(player);
+  if (q.audioText) {
+    var transcript = document.createElement('div');
+    transcript.id = 'transcript-' + q.id;
+    transcript.className = 'text-block';
+    transcript.style.display = 'none';
+    transcript.style.marginTop = '8px';
+    transcript.style.background = '#fffbe6';
+    var lbl = document.createElement('div');
+    lbl.style.fontWeight = '700';
+    lbl.style.marginBottom = '8px';
+    lbl.style.color = '#7a5d00';
+    lbl.textContent = '📖 Текстовая расшифровка:';
+    transcript.appendChild(lbl);
+    var txt = document.createElement('div');
+    txt.style.whiteSpace = 'pre-wrap';
+    txt.style.fontSize = '14px';
+    txt.style.lineHeight = '1.6';
+    renderAudioText(txt, q.audioText);
+    transcript.appendChild(txt);
+    container.appendChild(transcript);
+  }
+  var canPlay = audio.canPlayType('audio/mpeg');
+  if (canPlay === '' || canPlay === 'no') {
+    var errBox = document.createElement('div');
+    errBox.className = 'audio-error';
+    errBox.textContent = '⚠ Ваш браузер не поддерживает формат MP3. Используйте текстовую расшифровку ниже.';
+    player.appendChild(errBox);
+    showTranscriptButton(player, q);
+  }
+}
+
+function showTranscriptButton(player, q) {
+  var toggleBtn = player.querySelector('.toggle-text');
+  if (toggleBtn) toggleBtn.style.display = 'inline-block';
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// ===== ОТРИСОВКА =====
+function render() {
+  var root = document.getElementById('root');
+  root.innerHTML = '';
+  var session = STATE.currentSession;
+  if (!session) {
+    renderStart(root);
+  } else if (session.stage === 'diagnostic') {
+    renderDiagnostic(root);
+  } else if (session.stage === 'results') {
+    renderResults(root);
+  } else if (session.stage === 'training-pick') {
+    renderTrainingPick(root);
+  } else if (session.stage === 'training') {
+    renderTraining(root);
+  } else if (session.stage === 'control') {
+    renderControl(root);
+  } else if (session.stage === 'control-results') {
+    renderControlResults(root);
+  } else if (session.stage === 'teacher') {
+    renderTeacher(root);
+  }
+  renderFooter();
+}
+
+function renderStart(root) {
+  var card = document.createElement('div');
+  card.className = 'card card-accent';
+  var h1 = document.createElement('h1');
+  h1.textContent = 'Тренажёр ЕГЭ по английскому языку';
+  card.appendChild(h1);
+  var p = document.createElement('p');
+  p.textContent = 'Письменная часть, 2026 год. Заданий в банке: ' + BANK.questions.length;
+  p.style.fontSize = '17px';
+  p.style.marginBottom = '20px';
+  card.appendChild(p);
+  var btns = document.createElement('div');
+  btns.style.display = 'flex';
+  btns.style.gap = '10px';
+  btns.style.flexWrap = 'wrap';
+  var btnDiag = document.createElement('button');
+  btnDiag.className = 'btn btn-primary';
+  btnDiag.textContent = 'Начать диагностику';
+  btnDiag.addEventListener('click', function() { startDiagnostic(); });
+  btns.appendChild(btnDiag);
+  var btnRes = document.createElement('button');
+  btnRes.className = 'btn btn-secondary';
+  btnRes.textContent = 'Мои результаты';
+  btnRes.addEventListener('click', function() {
+    STATE.currentSession = { stage: 'results' };
+    saveState();
+    render();
+  });
+  btns.appendChild(btnRes);
+  var btnTeacher = document.createElement('button');
+  btnTeacher.className = 'btn btn-secondary';
+  btnTeacher.textContent = 'Для учителя';
+  btnTeacher.addEventListener('click', function() {
+    STATE.currentSession = { stage: 'teacher' };
+    saveState();
+    render();
+  });
+  btns.appendChild(btnTeacher);
+  card.appendChild(btns);
+  root.appendChild(card);
+  var info = document.createElement('div');
+  info.className = 'card';
+  var h2 = document.createElement('h2');
+  h2.textContent = 'Как это работает';
+  info.appendChild(h2);
+  var p1 = document.createElement('p');
+  p1.textContent = '1. Диагностика — ' + BANK.questions.filter(function(q){return q.role==='diagnostic';}).length + ' заданий.';
+  info.appendChild(p1);
+  var p2 = document.createElement('p');
+  p2.textContent = '2. Тренировка — задания подбираются по слабым разделам.';
+  info.appendChild(p2);
+  var p3 = document.createElement('p');
+  p3.textContent = '3. Контроль — обновляет «Колесо результатов».';
+  info.appendChild(p3);
+  var p4 = document.createElement('p');
+  p4.textContent = 'Версия банка: ' + BANK.bankVersion;
+  p4.style.fontSize = '13px';
+  p4.style.color = '#666';
+  p4.style.marginTop = '16px';
+  info.appendChild(p4);
+  root.appendChild(info);
+  if (!storageAvailable) {
+    var warn = document.createElement('div');
+    warn.className = 'warn';
+    warn.textContent = '⚠ Локальное хранилище недоступно. Прогресс не сохраняется между сессиями.';
+    root.appendChild(warn);
+  }
+}
+
+function startDiagnostic() {
+  STATE.currentSession = {
+    stage: 'diagnostic',
+    questions: BANK.questions.filter(function(q){return q.role==='diagnostic';}).map(function(q){return q.id;}),
+    current: 0,
+    answers: {}
+  };
+  saveState();
+  render();
+}
+
+function renderDiagnostic(root) {
+  var s = STATE.currentSession;
+  var qId = s.questions[s.current];
+  var q = findQuestion(qId);
+  if (!q) { root.textContent = 'Задание не найдено: ' + qId; return; }
+  var card = document.createElement('div');
+  card.className = 'card';
+  var header = document.createElement('div');
+  header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px';
+  var left = document.createElement('div');
+  var roleBadge = document.createElement('span');
+  roleBadge.className = 'badge badge-diag';
+  roleBadge.textContent = 'Диагностика';
+  left.appendChild(roleBadge);
+  var secSpan = document.createElement('span');
+  secSpan.style.cssText = 'margin-left:8px;font-weight:600';
+  secSpan.textContent = findSection(q.sectionId).short;
+  left.appendChild(secSpan);
+  header.appendChild(left);
+  var meta = document.createElement('div');
+  meta.style.cssText = 'font-size:13px;color:#666';
+  meta.textContent = 'Задание ' + (s.current + 1) + ' из ' + s.questions.length + ' · ЕГЭ № ' + q.taskNumber;
+  header.appendChild(meta);
+  card.appendChild(header);
+  var progress = document.createElement('div');
+  progress.className = 'progress';
+  var fill = document.createElement('div');
+  fill.className = 'progress-fill';
+  fill.style.width = ((s.current / s.questions.length) * 100) + '%';
+  progress.appendChild(fill);
+  card.appendChild(progress);
+  var h3 = document.createElement('h3');
+  h3.textContent = q.title;
+  card.appendChild(h3);
+  var instr = document.createElement('p');
+  instr.textContent = q.instruction;
+  instr.style.cssText = 'margin:12px 0;color:#444';
+  card.appendChild(instr);
+  var body = document.createElement('div');
+  body.id = 'q-body';
+  card.appendChild(body);
+  renderQuestionBody(body, q);
+  var btns = document.createElement('div');
+  btns.style.cssText = 'margin-top:16px;display:flex;gap:10px;flex-wrap:wrap';
+  btns.id = 'action-btns';
+  var submitBtn = document.createElement('button');
+  submitBtn.className = 'btn btn-primary';
+  submitBtn.textContent = 'Ответить';
+  submitBtn.id = 'btn-submit';
+  submitBtn.addEventListener('click', function() { submitDiagnostic(q); });
+  btns.appendChild(submitBtn);
+  var skipBtn = document.createElement('button');
+  skipBtn.className = 'btn btn-secondary';
+  skipBtn.textContent = 'Не знаю';
+  skipBtn.id = 'btn-skip';
+  skipBtn.addEventListener('click', function() {
+    STATE.attempts[q.id] = STATE.attempts[q.id] || [];
+    STATE.attempts[q.id].push({points: 0, max: q.maxPoints});
+    s.current++;
+    if (s.current >= s.questions.length) s.stage = 'results';
+    saveState();
+    render();
+  });
+  btns.appendChild(skipBtn);
+  card.appendChild(btns);
+  root.appendChild(card);
+}
+
+function submitDiagnostic(q) {
+  var body = document.getElementById('q-body');
+  var given = getAnswer(q, body);
+  var result = checkAnswer(q, given);
+  STATE.attempts[q.id] = STATE.attempts[q.id] || [];
+  STATE.attempts[q.id].push({points: result.points, max: q.maxPoints, given: given});
+  STATE.currentSession.current++;
+  if (STATE.currentSession.current >= STATE.currentSession.questions.length) {
+    STATE.currentSession.stage = 'results';
+  }
+  saveState();
+  render();
+}
+
+function findQuestion(id) {
+  for (var i = 0; i < BANK.questions.length; i++) {
+    if (BANK.questions[i].id === id) return BANK.questions[i];
+  }
+  return null;
+}
+function findSection(id) {
+  for (var i = 0; i < BANK.sections.length; i++) {
+    if (BANK.sections[i].id === id) return BANK.sections[i];
+  }
+  return null;
+}
+
+function renderQuestionBody(container, q) {
+  // Аудиоплеер (если есть аудиофайл)
+  if (q.audioFile) {
+    renderAudioPlayer(container, q);
+  } else if (q.audioText && (q.type === 'number1' || q.type === 'match2' || q.type === 'match3') && !q.passage && !q.texts) {
+    // Если нет аудиофайла, но есть audioText (для авторских заданий) — показываем текст
+    var audio = document.createElement('div');
+    audio.className = 'text-block';
+    var lbl = document.createElement('div');
+    lbl.style.fontWeight = '700';
+    lbl.style.marginBottom = '8px';
+    lbl.textContent = 'Текст для чтения (аудио отсутствует):';
+    audio.appendChild(lbl);
+    var txt = document.createElement('div');
+    txt.style.whiteSpace = 'pre-wrap';
+    txt.style.fontSize = '14px';
+    txt.style.lineHeight = '1.6';
+    renderAudioText(txt, q.audioText);
+    audio.appendChild(txt);
+    container.appendChild(audio);
+  }
+  
+  // Текст для чтения (passage)
+  if (q.passage) {
+    var p = document.createElement('div');
+    p.className = 'text-block-full';
+    var passageDiv = document.createElement('div');
+    passageDiv.style.whiteSpace = 'pre-wrap';
+    passageDiv.textContent = q.passage;
+    p.appendChild(passageDiv);
+    container.appendChild(p);
+  }
+  
+  // Текст с пропусками для вставки (match2 с blanks и options)
+  if (q.text && q.blanks && q.options && !q.acceptedAnswers) {
+    var t = document.createElement('div');
+    t.className = 'text-block-full';
+    renderTextWithBlanks(t, q.text, q.blanks);
+    container.appendChild(t);
+  }
+  
+  // Вопрос (если есть text, но нет passage, blanks или texts)
+  if (q.text && !q.passage && !q.blanks && !q.texts && !q.audioFile) {
+    var qText = document.createElement('p');
+    qText.style.cssText = 'font-weight:600;margin:12px 0';
+    qText.textContent = q.text;
+    container.appendChild(qText);
+  } else if (q.text && !q.passage && !q.blanks && !q.texts && q.audioFile) {
+    // Для заданий аудирования с аудио — показываем только вопрос
+    var qText = document.createElement('p');
+    qText.style.cssText = 'font-weight:600;margin:12px 0';
+    qText.textContent = q.text;
+    container.appendChild(qText);
+  }
+  
+  // Утверждения
+  if (q.statements) {
+    var st = document.createElement('div');
+    st.className = 'text-block';
+    var lbl = document.createElement('div');
+    lbl.style.cssText = 'font-weight:700;margin-bottom:8px';
+    lbl.textContent = 'Утверждения:';
+    st.appendChild(lbl);
+    var ul = document.createElement('ul');
+    ul.className = 'statement-list';
+    for (var i = 0; i < q.statements.length; i++) {
+      var li = document.createElement('li');
+      li.textContent = q.statements[i];
+      ul.appendChild(li);
+    }
+    st.appendChild(ul);
+    container.appendChild(st);
+  }
+  
+  // Варианты вставки (для match2 с blanks)
+  if (q.options && q.blanks && !q.acceptedAnswers) {
+    var st = document.createElement('div');
+    st.className = 'text-block';
+    var lbl = document.createElement('div');
+    lbl.style.cssText = 'font-weight:700;margin-bottom:8px';
+    lbl.textContent = 'Варианты вставки:';
+    st.appendChild(lbl);
+    var ul = document.createElement('ul');
+    ul.className = 'statement-list';
+    for (var i = 0; i < q.options.length; i++) {
+      var li = document.createElement('li');
+      li.textContent = q.options[i];
+      ul.appendChild(li);
+    }
+    st.appendChild(ul);
+    container.appendChild(st);
+  }
+  
+  // Тексты для заголовков (match3 с texts)
+  if (q.texts) {
+    var keys = Object.keys(q.texts);
+    for (var k = 0; k < keys.length; k++) {
+      var key = keys[k];
+      var t = document.createElement('div');
+      t.className = 'text-block-full';
+      var strong = document.createElement('strong');
+      strong.textContent = key + '. ';
+      t.appendChild(strong);
+      var textContent = document.createElement('span');
+      textContent.textContent = q.texts[key];
+      t.appendChild(textContent);
+      container.appendChild(t);
+    }
+  }
+  
+  // Варианты number1
+  if (q.type === 'number1' && q.options) {
+    var optionsWrap = document.createElement('div');
+    for (var i = 0; i < q.options.length; i++) {
+      (function(idx) {
+        var div = document.createElement('div');
+        div.className = 'option';
+        div.textContent = (idx + 1) + '. ' + q.options[idx];
+        div.addEventListener('click', function() {
+          var all = optionsWrap.querySelectorAll('.option');
+          for (var j = 0; j < all.length; j++) all[j].classList.remove('selected');
+          div.classList.add('selected');
+          container.setAttribute('data-selected', String(idx + 1));
+        });
+        optionsWrap.appendChild(div);
+      })(i);
+    }
+    container.appendChild(optionsWrap);
+  }
+  
+  // Поля для match2/match3 (без blanks, т.е. для аудирования)
+  if ((q.type === 'match2' || q.type === 'match3') && q.leftLabels && !q.blanks) {
+    var grid = document.createElement('div');
+    grid.style.marginTop = '16px';
+    var title = document.createElement('div');
+    title.style.cssText = 'font-weight:700;margin-bottom:8px';
+    title.textContent = 'Ваши ответы (цифры без пробелов):';
+    grid.appendChild(title);
+    for (var i = 0; i < q.leftLabels.length; i++) {
+      var row = document.createElement('div');
+      row.className = 'match-row';
+      var lbl = document.createElement('label');
+      lbl.textContent = q.leftLabels[i];
+      row.appendChild(lbl);
+      var inp = document.createElement('input');
+      inp.type = 'text';
+      inp.setAttribute('data-label', q.leftLabels[i]);
+      inp.setAttribute('maxlength', '2');
+      inp.setAttribute('inputmode', 'numeric');
+      (function(input) {
+        input.addEventListener('input', function() {
+          input.value = input.value.replace(/[^0-9]/g, '');
+        });
+      })(inp);
+      row.appendChild(inp);
+      grid.appendChild(row);
+    }
+    container.appendChild(grid);
+  }
+  
+  // Поля для cloze (грамматика/лексика)
+  if (q.type === 'cloze' && q.blanks) {
+    renderClozeText(container, q);
+  }
+}
+
+// Новая функция для отображения текста с интерактивными пропусками
+function renderTextWithBlanks(container, text, blanks) {
+  // Заменяем A ______, B ______ и т.д. на интерактивные поля ввода
+  var lines = text.split('\n');
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i];
+    if (line.trim() === '') {
+      container.appendChild(document.createElement('br'));
+      continue;
+    }
+    
+    var lineContainer = document.createElement('div');
+    lineContainer.style.marginBottom = '8px';
+    lineContainer.style.lineHeight = '1.8';
+    
+    // Регулярное выражение для поиска пропусков A-F
+    var regex = /([A-F])\s*_{2,}/g;
+    var lastIdx = 0;
+    var match;
+    
+    while ((match = regex.exec(line)) !== null) {
+      // Добавляем текст до пропуска
+      if (match.index > lastIdx) {
+        lineContainer.appendChild(document.createTextNode(line.slice(lastIdx, match.index)));
+      }
+      
+      var label = match[1];
+      
+      // Создаём интерактивное поле ввода
+      var blankSpan = document.createElement('span');
+      blankSpan.className = 'inline-blank';
+      
+      var inp = document.createElement('input');
+      inp.type = 'text';
+      inp.setAttribute('data-label', label);
+      inp.setAttribute('maxlength', '2');
+      inp.setAttribute('inputmode', 'numeric');
+      inp.style.width = '40px';
+      inp.addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+      });
+      
+      blankSpan.appendChild(document.createTextNode(label + ' '));
+      blankSpan.appendChild(inp);
+      lineContainer.appendChild(blankSpan);
+      
+      lastIdx = regex.lastIndex;
+    }
+    
+    // Добавляем оставшийся текст
+    if (lastIdx < line.length) {
+      lineContainer.appendChild(document.createTextNode(line.slice(lastIdx)));
+    }
+    
+    container.appendChild(lineContainer);
+  }
+}
+
+function renderAudioText(container, text) {
+  var parts = text.split(/\n\n+/);
+  for (var p = 0; p < parts.length; p++) {
+    if (parts[p].trim() === '') continue;
+    var lines = parts[p].split('\n');
+    for (var l = 0; l < lines.length; l++) {
+      var line = lines[l];
+      var m = line.match(/^(Speaker [A-F]|Peter|Jane|Presenter|Eva James|Tom|Lisa|Mark|Anna|Eva):\s*(.*)$/);
+      if (m) {
+        var sp = document.createElement('span');
+        sp.className = 'speaker';
+        sp.textContent = m[1] + ': ';
+        container.appendChild(sp);
+        container.appendChild(document.createTextNode(m[2]));
+      } else {
+        container.appendChild(document.createTextNode(line));
+      }
+      container.appendChild(document.createElement('br'));
+    }
+    if (p < parts.length - 1) container.appendChild(document.createElement('br'));
+  }
+}
+
+function renderClozeText(container, q) {
+  var lines = q.text.split('\n');
+  var blankLabels = {};
+  for (var i = 0; i < q.blanks.length; i++) {
+    blankLabels[q.blanks[i].label] = q.blanks[i];
+  }
+  for (var li = 0; li < lines.length; li++) {
+    var line = lines[li];
+    if (line.trim() === '') {
+      container.appendChild(document.createElement('br'));
+      continue;
+    }
+    if (/^[A-ZА-ЯЁ]+$/.test(line.trim()) && li > 0) {
+      var prompt = document.createElement('div');
+      prompt.className = 'prompt-word';
+      prompt.textContent = line.trim();
+      container.appendChild(prompt);
+      continue;
+    }
+    var lineContainer = document.createElement('div');
+    lineContainer.style.marginBottom = '6px';
+    var regex = /\((\d+)\)\s*_{2,}/g;
+    var lastIdx = 0;
+    var match;
+    while ((match = regex.exec(line)) !== null) {
+      if (match.index > lastIdx) {
+        lineContainer.appendChild(document.createTextNode(line.slice(lastIdx, match.index)));
+      }
+      var label = match[1];
+      lineContainer.appendChild(document.createTextNode('(' + label + ') '));
+      if (blankLabels[label]) {
+        var inp = document.createElement('input');
+        inp.className = 'blank-input';
+        inp.setAttribute('data-label', label);
+        inp.setAttribute('placeholder', blankLabels[label].prompt);
+        lineContainer.appendChild(inp);
+      }
+      lastIdx = regex.lastIndex;
+    }
+    if (lastIdx < line.length) {
+      lineContainer.appendChild(document.createTextNode(line.slice(lastIdx)));
+    }
+    container.appendChild(lineContainer);
+  }
+}
+
+function getAnswer(q, container) {
+  if (q.type === 'number1') {
+    if (q.options) return container.getAttribute('data-selected') || null;
+    return null;
+  } else if (q.type === 'match2' || q.type === 'match3') {
+    // Для заданий с blanks (вставка пропусков в тексте)
+    if (q.blanks && !q.acceptedAnswers) {
+      var inputs = container.querySelectorAll('.inline-blank input');
+      var ans = '';
+      for (var i = 0; i < inputs.length; i++) {
+        ans += inputs[i].value.trim();
+      }
+      return ans;
+    }
+    // Для заданий с leftLabels (аудирование)
+    else if (q.leftLabels) {
+      var inputs = container.querySelectorAll('.match-row input');
+      var ans = '';
+      for (var i = 0; i < inputs.length; i++) {
+        ans += inputs[i].value.trim();
+      }
+      return ans;
+    }
+    return null;
+  } else if (q.type === 'cloze') {
+    var inputs = container.querySelectorAll('.blank-input');
+    var ans = {};
+    for (var i = 0; i < inputs.length; i++) {
+      ans[inputs[i].getAttribute('data-label')] = inputs[i].value.trim();
+    }
+    return ans;
+  }
+  return null;
+}
+
+function checkAnswer(q, given) {
+  if (given === null || given === undefined || given === '') return { points: 0, correct: false };
+  if (q.type === 'number1') {
+    var norm = String(given).trim();
+    return { points: norm === String(q.answer) ? 1 : 0, correct: norm === String(q.answer) };
+  } else if (q.type === 'match2' || q.type === 'match3') {
+    var norm = String(given).replace(/\s+/g, '');
+    var key = String(q.answer);
+    if (norm.length !== key.length) return { points: 0, correct: false };
+    var errors = 0;
+    for (var i = 0; i < key.length; i++) {
+      if (norm[i] !== key[i]) errors++;
+    }
+    var points = Math.max(0, q.maxPoints - errors);
+    return { points: points, correct: points === q.maxPoints };
+  } else if (q.type === 'cloze') {
+    var pts = 0;
+    var details = [];
+    for (var i = 0; i < q.blanks.length; i++) {
+      var b = q.blanks[i];
+      var userVal = normalizeWord(given[b.label] || '');
+      var accepted = [];
+      for (var j = 0; j < q.acceptedAnswers[i].length; j++) {
+        accepted.push(normalizeWord(q.acceptedAnswers[i][j]));
+      }
+      var ok = userVal !== '' && accepted.indexOf(userVal) !== -1;
+      if (ok) pts++;
+      details.push({ label: b.label, user: given[b.label] || '', expected: q.acceptedAnswers[i][0], ok: ok });
+    }
+    return { points: pts, correct: pts === q.blanks.length, details: details };
+  }
+  return { points: 0, correct: false };
+}
+
+function normalizeWord(s) {
+  return String(s).toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9а-яё']/g, '');
+}
+
+// ===== ЭКРАН РЕЗУЛЬТАТОВ =====
+function renderResults(root) {
+  var scores = computeSectionScores();
+  var wheelCard = document.createElement('div');
+  wheelCard.className = 'wheel-card';
+  var h2 = document.createElement('h2');
+  h2.textContent = 'Колесо результатов';
+  h2.style.marginBottom = '16px';
+  wheelCard.appendChild(h2);
+  var wrap = document.createElement('div');
+  wrap.className = 'wheel-wrap';
+  var svgWrap = document.createElement('div');
+  svgWrap.className = 'wheel-svg-wrap';
+  svgWrap.id = 'wheel-mount';
+  wrap.appendChild(svgWrap);
+  var legend = document.createElement('div');
+  legend.className = 'wheel-legend';
+  var l1 = document.createElement('div');
+  l1.className = 'legend-item';
+  var d1 = document.createElement('div');
+  d1.className = 'legend-dot now';
+  l1.appendChild(d1);
+  l1.appendChild(document.createTextNode('Сейчас'));
+  legend.appendChild(l1);
+  var l2 = document.createElement('div');
+  l2.className = 'legend-item';
+  var d2 = document.createElement('div');
+  d2.className = 'legend-dot before';
+  l2.appendChild(d2);
+  l2.appendChild(document.createTextNode('До контроля'));
+  legend.appendChild(l2);
+  wrap.appendChild(legend);
+  wheelCard.appendChild(wrap);
+  var note = document.createElement('p');
+  note.className = 'wheel-note';
+  note.textContent = 'Это учебный показатель, а не прогноз экзаменационного балла.';
+  wheelCard.appendChild(note);
+  root.appendChild(wheelCard);
+  drawWheel(document.getElementById('wheel-mount'), scores);
+
+  var tableCard = document.createElement('div');
+  tableCard.className = 'card';
+  var h3 = document.createElement('h3');
+  h3.textContent = 'Сводка по разделам';
+  tableCard.appendChild(h3);
+  var table = document.createElement('table');
+  var thead = document.createElement('thead');
+  var trh = document.createElement('tr');
+  var headers = ['Раздел', 'Результат', 'Заданий', 'Статус'];
+  for (var i = 0; i < headers.length; i++) {
+    var th = document.createElement('th');
+    th.textContent = headers[i];
+    trh.appendChild(th);
+  }
+  thead.appendChild(trh);
+  table.appendChild(thead);
+  var tbody = document.createElement('tbody');
+  var totalEarned = 0, totalMax = 0;
+  for (var s = 0; s < BANK.sections.length; s++) {
+    var sec = BANK.sections[s];
+    var sc = scores[sec.id];
+    totalEarned += sc.earned;
+    totalMax += sc.max;
+    var tr = document.createElement('tr');
+    var td1 = document.createElement('td');
+    td1.textContent = sec.title;
+    tr.appendChild(td1);
+    var td2 = document.createElement('td');
+    var strong = document.createElement('strong');
+    strong.textContent = sc.percent !== null ? sc.percent + '%' : '—';
+    td2.appendChild(strong);
+    td2.appendChild(document.createTextNode(' (' + sc.earned + '/' + sc.max + ')'));
+    tr.appendChild(td2);
+    var td3 = document.createElement('td');
+    td3.textContent = String(sc.count);
+    tr.appendChild(td3);
+    var td4 = document.createElement('td');
+    var badge = document.createElement('span');
+    badge.className = 'badge';
+    if (sc.count === 0) { 
+      badge.className += ' badge-diag'; 
+      badge.textContent = 'не проверен'; 
+    } else if (sc.percent >= 70) { 
+      badge.className += ' badge-ok'; 
+      badge.textContent = 'хорошо'; 
+    } else if (sc.percent >= 40) {
+      badge.className += ' badge-warn';
+      badge.textContent = 'нужна тренировка';
+    } else { 
+      badge.className += ' badge-err'; 
+      badge.textContent = 'слабо'; 
+    }
+    td4.appendChild(badge);
+    tr.appendChild(td4);
+    tbody.appendChild(tr);
+  }
+  table.appendChild(tbody);
+  tableCard.appendChild(table);
+  var totalP = document.createElement('p');
+  totalP.style.cssText = 'margin-top:16px;font-size:16px';
+  var strong = document.createElement('strong');
+  strong.textContent = 'Итого: ' + totalEarned + '/' + totalMax;
+  totalP.appendChild(strong);
+  if (totalMax > 0) {
+    totalP.appendChild(document.createTextNode(' (' + Math.round(100 * totalEarned / totalMax) + '%)'));
+  }
+  tableCard.appendChild(totalP);
+  root.appendChild(tableCard);
+
+  var actionsCard = document.createElement('div');
+  actionsCard.className = 'card';
+  var h3 = document.createElement('h3');
+  h3.textContent = 'Следующий шаг';
+  actionsCard.appendChild(h3);
+  var btns = document.createElement('div');
+  btns.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;margin-top:12px';
+  
+  var allDiagDone = BANK.sections.every(function(sec) { return scores[sec.id].count > 0; });
+  var hasTraining = STATE.lastTrainingPlan !== null;
+  
+  if (!allDiagDone) {
+    var trainBtn = document.createElement('button');
+    trainBtn.className = 'btn btn-primary';
+    trainBtn.textContent = 'Тренироваться';
+    trainBtn.addEventListener('click', function() {
+      STATE.currentSession = { stage: 'training-pick' };
+      saveState();
+      render();
+    });
+    btns.appendChild(trainBtn);
+    var diagBtn = document.createElement('button');
+    diagBtn.className = 'btn btn-secondary';
+    diagBtn.textContent = 'Продолжить диагностику';
+    diagBtn.addEventListener('click', function() { startDiagnostic(); });
+    btns.appendChild(diagBtn);
+  } else if (!hasTraining) {
+    var trainBtn = document.createElement('button');
+    trainBtn.className = 'btn btn-primary';
+    trainBtn.textContent = 'Тренироваться';
+    trainBtn.addEventListener('click', function() {
+      STATE.currentSession = { stage: 'training-pick' };
+      saveState();
+      render();
+    });
+    btns.appendChild(trainBtn);
+  } else {
+    var controlBtn = document.createElement('button');
+    controlBtn.className = 'btn btn-primary';
+    controlBtn.textContent = 'Пройти контроль';
+    controlBtn.addEventListener('click', function() { startControl(); });
+    btns.appendChild(controlBtn);
+    var moreTrainBtn = document.createElement('button');
+    moreTrainBtn.className = 'btn btn-secondary';
+    moreTrainBtn.textContent = 'Ещё тренировка';
+    moreTrainBtn.addEventListener('click', function() {
+      STATE.currentSession = { stage: 'training-pick' };
+      saveState();
+      render();
+    });
+    btns.appendChild(moreTrainBtn);
+  }
+  
+  var homeBtn = document.createElement('button');
+  homeBtn.className = 'btn btn-secondary';
+  homeBtn.textContent = 'На главную';
+  homeBtn.addEventListener('click', function() {
+    STATE.currentSession = null;
+    saveState();
+    render();
+  });
+  btns.appendChild(homeBtn);
+  actionsCard.appendChild(btns);
+  root.appendChild(actionsCard);
+}
+
+// ===== ТРЕНИРОВКА =====
+function renderTrainingPick(root) {
+  var scores = computeSectionScores();
+  var card = document.createElement('div');
+  card.className = 'card';
+  var h2 = document.createElement('h2');
+  h2.textContent = 'Тренировка';
+  card.appendChild(h2);
+  var p = document.createElement('p');
+  p.textContent = 'Задания подберутся по вашим слабым разделам. Чем ниже результат — тем больше заданий.';
+  card.appendChild(p);
+  var infoBox = document.createElement('div');
+  infoBox.className = 'info-box';
+  var infoTitle = document.createElement('div');
+  infoTitle.style.cssText = 'font-weight:700;margin-bottom:8px';
+  infoTitle.textContent = 'Ваши текущие результаты:';
+  infoBox.appendChild(infoTitle);
+  for (var s = 0; s < BANK.sections.length; s++) {
+    var sec = BANK.sections[s];
+    var sc = scores[sec.id];
+    var row = document.createElement('div');
+    row.style.padding = '4px 0';
+    var pctText = sc.percent !== null ? sc.percent + '%' : 'не проверен';
+    row.textContent = sec.title + ': ' + pctText;
+    infoBox.appendChild(row);
+  }
+  card.appendChild(infoBox);
+  var pickTitle = document.createElement('div');
+  pickTitle.style.cssText = 'font-weight:600;margin-top:16px;margin-bottom:8px';
+  pickTitle.textContent = 'Выберите количество заданий:';
+  card.appendChild(pickTitle);
+  var sizes = [5, 10, 15];
+  var pickDiv = document.createElement('div');
+  pickDiv.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px';
+  for (var i = 0; i < sizes.length; i++) {
+    (function(size) {
+      var btn = document.createElement('button');
+      btn.className = 'btn btn-secondary btn-size';
+      btn.textContent = size + ' заданий';
+      btn.addEventListener('click', function() { startTrainingSession(size); });
+      pickDiv.appendChild(btn);
+    })(sizes[i]);
+  }
+  card.appendChild(pickDiv);
+  var backBtn = document.createElement('button');
+  backBtn.className = 'btn btn-secondary';
+  backBtn.textContent = 'Назад';
+  backBtn.addEventListener('click', function() {
+    STATE.currentSession = { stage: 'results' };
+    saveState();
+    render();
+  });
+  card.appendChild(backBtn);
+  root.appendChild(card);
+}
+
+function startTrainingSession(N) {
+  var scores = computeSectionScores();
+  var P = {};
+  for (var s = 0; s < BANK.sections.length; s++) {
+    var sec = BANK.sections[s];
+    var sc = scores[sec.id];
+    if (sc.count === 0) {
+      P[sec.id] = 0;
+    } else {
+      P[sec.id] = Math.max(10, 100 - (sc.percent || 0));
+    }
+  }
+  var alloc = allocateByLargestRemainder(P, N);
+  var selected = [];
+  for (var s = 0; s < BANK.sections.length; s++) {
+    var sec = BANK.sections[s];
+    var need = alloc[sec.id] || 0;
+    if (need <= 0) continue;
+    var ids = selectPracticeQuestions(sec.id, need);
+    selected = selected.concat(ids);
+  }
+  if (selected.length === 0) {
+    alert('Нет заданий для тренировки.');
+    STATE.currentSession = { stage: 'results' };
+    saveState();
+    render();
+    return;
+  }
+  STATE.currentSession = {
+    stage: 'training',
+    questions: selected,
+    current: 0,
+    plan: alloc
+  };
+  STATE.lastTrainingPlan = alloc;
+  saveState();
+  render();
+}
+
+function renderTraining(root) {
+  var s = STATE.currentSession;
+  if (s.current >= s.questions.length) {
+    s.stage = 'results';
+    saveState();
+    render();
+    return;
+  }
+  var qId = s.questions[s.current];
+  var q = findQuestion(qId);
+  if (!q) { root.textContent = 'Задание не найдено: ' + qId; return; }
+  var card = document.createElement('div');
+  card.className = 'card';
+  var header = document.createElement('div');
+  header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px';
+  var left = document.createElement('div');
+  var roleBadge = document.createElement('span');
+  roleBadge.className = 'badge badge-practice';
+  roleBadge.textContent = 'Тренировка';
+  left.appendChild(roleBadge);
+  var secSpan = document.createElement('span');
+  secSpan.style.cssText = 'margin-left:8px;font-weight:600';
+  secSpan.textContent = findSection(q.sectionId).short;
+  left.appendChild(secSpan);
+  header.appendChild(left);
+  var meta = document.createElement('div');
+  meta.style.cssText = 'font-size:13px;color:#666';
+  meta.textContent = 'Задание ' + (s.current + 1) + ' из ' + s.questions.length + ' · ЕГЭ № ' + q.taskNumber;
+  header.appendChild(meta);
+  card.appendChild(header);
+  var progress = document.createElement('div');
+  progress.className = 'progress';
+  var fill = document.createElement('div');
+  fill.className = 'progress-fill';
+  fill.style.width = ((s.current / s.questions.length) * 100) + '%';
+  progress.appendChild(fill);
+  card.appendChild(progress);
+  var h3 = document.createElement('h3');
+  h3.textContent = q.title;
+  card.appendChild(h3);
+  var instr = document.createElement('p');
+  instr.textContent = q.instruction;
+  instr.style.cssText = 'margin:12px 0;color:#444';
+  card.appendChild(instr);
+  var body = document.createElement('div');
+  body.id = 'q-body';
+  card.appendChild(body);
+  renderQuestionBody(body, q);
+  var feedback = document.createElement('div');
+  feedback.id = 'feedback-area';
+  card.appendChild(feedback);
+  var btns = document.createElement('div');
+  btns.style.cssText = 'margin-top:16px;display:flex;gap:10px;flex-wrap:wrap';
+  btns.id = 'action-btns';
+  var submitBtn = document.createElement('button');
+  submitBtn.className = 'btn btn-primary';
+  submitBtn.textContent = 'Ответить';
+  submitBtn.id = 'btn-submit';
+  submitBtn.addEventListener('click', function() { submitTraining(q); });
+  btns.appendChild(submitBtn);
+  var skipBtn = document.createElement('button');
+  skipBtn.className = 'btn btn-secondary';
+  skipBtn.textContent = 'Не знаю';
+  skipBtn.id = 'btn-skip';
+  skipBtn.addEventListener('click', function() {
+    STATE.attempts[q.id] = STATE.attempts[q.id] || [];
+    STATE.attempts[q.id].push({points: 0, max: q.maxPoints});
+    saveState();
+    showTrainingFeedback(q, null, 0);
+  });
+  btns.appendChild(skipBtn);
+  card.appendChild(btns);
+  root.appendChild(card);
+}
+
+function submitTraining(q) {
+  var body = document.getElementById('q-body');
+  var given = getAnswer(q, body);
+  var result = checkAnswer(q, given);
+  STATE.attempts[q.id] = STATE.attempts[q.id] || [];
+  STATE.attempts[q.id].push({points: result.points, max: q.maxPoints, given: given});
+  saveState();
+  showTrainingFeedback(q, given, result.points, result.details);
+}
+
+function showTrainingFeedback(q, given, points, details) {
+  var area = document.getElementById('feedback-area');
+  if (!area) return;
+  area.innerHTML = '';
+  var ok = points === q.maxPoints;
+  var fb = document.createElement('div');
+  fb.className = 'feedback ' + (ok ? 'feedback-ok' : 'feedback-err');
+  var head = document.createElement('div');
+  head.style.cssText = 'font-weight:700;margin-bottom:8px';
+  head.textContent = (ok ? '✓ Верно: ' : '✗ Ошибка: ') + points + ' / ' + q.maxPoints + ' баллов';
+  fb.appendChild(head);
+  if (q.type === 'cloze' && details) {
+    var det = document.createElement('div');
+    det.style.marginTop = '10px';
+    for (var i = 0; i < details.length; i++) {
+      var d = details[i];
+      var row = document.createElement('div');
+      row.style.padding = '4px 0';
+      var mark = document.createElement('strong');
+      mark.textContent = d.ok ? '✓ ' : '✗ ';
+      row.appendChild(mark);
+      row.appendChild(document.createTextNode(d.label + ': ваш ответ — '));
+      var em = document.createElement('em');
+      em.textContent = d.user || '—';
+      row.appendChild(em);
+      row.appendChild(document.createTextNode(', верно: '));
+      var strong2 = document.createElement('strong');
+      strong2.textContent = d.expected;
+      row.appendChild(strong2);
+      det.appendChild(row);
+    }
+    fb.appendChild(det);
+  } else {
+    var ans = document.createElement('div');
+    ans.style.marginTop = '10px';
+    ans.appendChild(document.createTextNode('Правильный ответ: '));
+    var strong = document.createElement('strong');
+    strong.textContent = String(q.answer);
+    ans.appendChild(strong);
+    fb.appendChild(ans);
+  }
+  var expl = document.createElement('div');
+  expl.style.cssText = 'margin-top:10px;font-size:14px;color:#444';
+  var explLbl = document.createElement('strong');
+  explLbl.textContent = 'Объяснение: ';
+  expl.appendChild(explLbl);
+  expl.appendChild(document.createTextNode(q.explanation));
+  fb.appendChild(expl);
+  area.appendChild(fb);
+  var nextBtn = document.createElement('button');
+  nextBtn.className = 'btn btn-primary';
+  nextBtn.textContent = 'Дальше';
+  nextBtn.style.marginTop = '12px';
+  nextBtn.addEventListener('click', function() {
+    STATE.currentSession.current++;
+    saveState();
+    render();
+  });
+  area.appendChild(nextBtn);
+  var submit = document.getElementById('btn-submit');
+  var skip = document.getElementById('btn-skip');
+  if (submit) submit.style.display = 'none';
+  if (skip) skip.style.display = 'none';
+}
+
+// ===== КОНТРОЛЬ =====
+function startControl() {
+  var plan = STATE.lastTrainingPlan || {};
+  var selected = [];
+  for (var s = 0; s < BANK.sections.length; s++) {
+    var sec = BANK.sections[s];
+    if (!plan[sec.id] || plan[sec.id] === 0) continue;
+    var pool = BANK.questions.filter(function(q) { return q.sectionId === sec.id && q.role === 'control'; });
+    selected = selected.concat(pool.slice(0, 2).map(function(q) { return q.id; }));
+  }
+  if (selected.length === 0) {
+    alert('Нет заданий для контроля.');
+    return;
+  }
+  STATE.currentSession = {
+    stage: 'control',
+    questions: selected,
+    current: 0,
+    answers: {}
+  };
+  saveState();
+  render();
+}
+
+function renderControl(root) {
+  var s = STATE.currentSession;
+  if (s.current >= s.questions.length) {
+    s.stage = 'control-results';
+    saveState();
+    render();
+    return;
+  }
+  var qId = s.questions[s.current];
+  var q = findQuestion(qId);
+  if (!q) { root.textContent = 'Задание не найдено: ' + qId; return; }
+  var card = document.createElement('div');
+  card.className = 'card';
+  var header = document.createElement('div');
+  header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px';
+  var left = document.createElement('div');
+  var roleBadge = document.createElement('span');
+  roleBadge.className = 'badge badge-control';
+  roleBadge.textContent = 'Контроль';
+  left.appendChild(roleBadge);
+  var secSpan = document.createElement('span');
+  secSpan.style.cssText = 'margin-left:8px;font-weight:600';
+  secSpan.textContent = findSection(q.sectionId).short;
+  left.appendChild(secSpan);
+  header.appendChild(left);
+  var meta = document.createElement('div');
+  meta.style.cssText = 'font-size:13px;color:#666';
+  meta.textContent = 'Задание ' + (s.current + 1) + ' из ' + s.questions.length + ' · ЕГЭ № ' + q.taskNumber;
+  header.appendChild(meta);
+  card.appendChild(header);
+  var progress = document.createElement('div');
+  progress.className = 'progress';
+  var fill = document.createElement('div');
+  fill.className = 'progress-fill';
+  fill.style.width = ((s.current / s.questions.length) * 100) + '%';
+  progress.appendChild(fill);
+  card.appendChild(progress);
+  var info = document.createElement('div');
+  info.className = 'info-box';
+  info.textContent = 'Разбор будет в конце контроля. Отвечайте как на экзамене.';
+  card.appendChild(info);
+  var h3 = document.createElement('h3');
+  h3.textContent = q.title;
+  card.appendChild(h3);
+  var instr = document.createElement('p');
+  instr.textContent = q.instruction;
+  instr.style.cssText = 'margin:12px 0;color:#444';
+  card.appendChild(instr);
+  var body = document.createElement('div');
+  body.id = 'q-body';
+  card.appendChild(body);
+  renderQuestionBody(body, q);
+  var btns = document.createElement('div');
+  btns.style.cssText = 'margin-top:16px;display:flex;gap:10px;flex-wrap:wrap';
+  var submitBtn = document.createElement('button');
+  submitBtn.className = 'btn btn-primary';
+  submitBtn.textContent = 'Ответить';
+  submitBtn.addEventListener('click', function() {
+    var body = document.getElementById('q-body');
+    var given = getAnswer(q, body);
+    var result = checkAnswer(q, given);
+    STATE.attempts[q.id] = STATE.attempts[q.id] || [];
+    STATE.attempts[q.id].push({points: result.points, max: q.maxPoints, given: given});
+    s.current++;
+    saveState();
+    render();
+  });
+  btns.appendChild(submitBtn);
+  var skipBtn = document.createElement('button');
+  skipBtn.className = 'btn btn-secondary';
+  skipBtn.textContent = 'Не знаю';
+  skipBtn.addEventListener('click', function() {
+    STATE.attempts[q.id] = STATE.attempts[q.id] || [];
+    STATE.attempts[q.id].push({points: 0, max: q.maxPoints});
+    s.current++;
+    saveState();
+    render();
+  });
+  btns.appendChild(skipBtn);
+  card.appendChild(btns);
+  root.appendChild(card);
+}
+
+function renderControlResults(root) {
+  var scores = computeSectionScores();
+  var card = document.createElement('div');
+  card.className = 'card wheel-card';
+  var h2 = document.createElement('h2');
+  h2.textContent = 'Контроль пройден';
+  card.appendChild(h2);
+  var p = document.createElement('p');
+  p.textContent = 'Колесо обновлено. Посмотрите свой текущий результат.';
+  card.appendChild(p);
+  var wrap = document.createElement('div');
+  wrap.className = 'wheel-wrap';
+  var svgWrap = document.createElement('div');
+  svgWrap.className = 'wheel-svg-wrap';
+  svgWrap.id = 'wheel-mount';
+  wrap.appendChild(svgWrap);
+  var legend = document.createElement('div');
+  legend.className = 'wheel-legend';
+  var l1 = document.createElement('div');
+  l1.className = 'legend-item';
+  var d1 = document.createElement('div');
+  d1.className = 'legend-dot now';
+  l1.appendChild(d1);
+  l1.appendChild(document.createTextNode('Сейчас'));
+  legend.appendChild(l1);
+  wrap.appendChild(legend);
+  card.appendChild(wrap);
+  var note = document.createElement('p');
+  note.className = 'wheel-note';
+  note.textContent = 'Это учебный показатель, а не прогноз экзаменационного балла.';
+  card.appendChild(note);
+  root.appendChild(card);
+  drawWheel(document.getElementById('wheel-mount'), scores);
+
+  var details = document.createElement('div');
+  details.className = 'card';
+  var h3 = document.createElement('h3');
+  h3.textContent = 'Разбор контроля';
+  details.appendChild(h3);
+  for (var i = 0; i < STATE.currentSession.questions.length; i++) {
+    var qId = STATE.currentSession.questions[i];
+    var q = findQuestion(qId);
+    var attempts = STATE.attempts[qId] || [];
+    var last = attempts[attempts.length - 1];
+    var row = document.createElement('div');
+    row.style.cssText = 'padding:10px;border-bottom:1px solid #eee';
+    var title = document.createElement('strong');
+    title.textContent = q.title + ' — ';
+    row.appendChild(title);
+    row.appendChild(document.createTextNode(last.points + '/' + q.maxPoints + ' баллов ' + (last.points === q.maxPoints ? '✓' : '✗')));
+    row.appendChild(document.createElement('br'));
+    var expl = document.createElement('span');
+    expl.style.cssText = 'font-size:13px;color:#666';
+    expl.textContent = q.explanation;
+    row.appendChild(expl);
+    details.appendChild(row);
+  }
+  root.appendChild(details);
+
+  var actions = document.createElement('div');
+  actions.className = 'card';
+  var btns = document.createElement('div');
+  btns.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap';
+  var homeBtn = document.createElement('button');
+  homeBtn.className = 'btn btn-primary';
+  homeBtn.textContent = 'На главную';
+  homeBtn.addEventListener('click', function() {
+    STATE.currentSession = null;
+    saveState();
+    render();
+  });
+  btns.appendChild(homeBtn);
+  var moreBtn = document.createElement('button');
+  moreBtn.className = 'btn btn-secondary';
+  moreBtn.textContent = 'Ещё тренировка';
+  moreBtn.addEventListener('click', function() {
+    STATE.currentSession = { stage: 'results' };
+    saveState();
+    render();
+  });
+  btns.appendChild(moreBtn);
+  actions.appendChild(btns);
+  root.appendChild(actions);
+}
+
+// ===== РАЗДЕЛ УЧИТЕЛЯ =====
+function renderTeacher(root) {
+  var card = document.createElement('div');
+  card.className = 'card';
+  var top = document.createElement('div');
+  top.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px';
+  var h2 = document.createElement('h2');
+  h2.textContent = 'Для учителя';
+  h2.style.margin = '0';
+  top.appendChild(h2);
+  var backBtn = document.createElement('button');
+  backBtn.className = 'btn btn-secondary';
+  backBtn.textContent = 'Назад';
+  backBtn.addEventListener('click', function() {
+    STATE.currentSession = null;
+    saveState();
+    render();
+  });
+  top.appendChild(backBtn);
+  card.appendChild(top);
+
+  var info = document.createElement('div');
+  info.className = 'feedback feedback-info';
+  var strong = document.createElement('strong');
+  strong.textContent = 'Встроенный банк: ';
+  info.appendChild(strong);
+  info.appendChild(document.createTextNode('версия ' + BANK.bankVersion + ', всего ' + BANK.questions.length + ' заданий.'));
+  card.appendChild(info);
+
+  var h3 = document.createElement('h3');
+  h3.style.marginTop = '20px';
+  h3.textContent = 'Таблица покрытия';
+  card.appendChild(h3);
+  var tw = document.createElement('div');
+  tw.className = 'table-wrap';
+  var tbl = document.createElement('table');
+  var thead = document.createElement('thead');
+  var trh = document.createElement('tr');
+  var headers = ['Раздел', 'Диагностика', 'Тренировка', 'Контроль', 'Всего'];
+  for (var i = 0; i < headers.length; i++) {
+    var th = document.createElement('th');
+    th.textContent = headers[i];
+    trh.appendChild(th);
+  }
+  thead.appendChild(trh);
+  tbl.appendChild(thead);
+  var tbody = document.createElement('tbody');
+  for (var s = 0; s < BANK.sections.length; s++) {
+    var sec = BANK.sections[s];
+    var qs = BANK.questions.filter(function(q) { return q.sectionId === sec.id; });
+    var d = qs.filter(function(q) { return q.role === 'diagnostic'; }).length;
+    var p = qs.filter(function(q) { return q.role === 'practice'; }).length;
+    var c = qs.filter(function(q) { return q.role === 'control'; }).length;
+    var tr = document.createElement('tr');
+    var td1 = document.createElement('td');
+    td1.textContent = sec.title;
+    tr.appendChild(td1);
+    var td2 = document.createElement('td');
+    td2.textContent = String(d);
+    tr.appendChild(td2);
+    var td3 = document.createElement('td');
+    td3.textContent = String(p);
+    tr.appendChild(td3);
+    var td4 = document.createElement('td');
+    td4.textContent = String(c);
+    tr.appendChild(td4);
+    var td5 = document.createElement('td');
+    var strong2 = document.createElement('strong');
+    strong2.textContent = String(qs.length);
+    td5.appendChild(strong2);
+    tr.appendChild(td5);
+    tbody.appendChild(tr);
+  }
+  tbl.appendChild(tbody);
+  tw.appendChild(tbl);
+  card.appendChild(tw);
+
+  var h3 = document.createElement('h3');
+  h3.style.marginTop = '20px';
+  h3.textContent = 'Действия';
+  card.appendChild(h3);
+  var actions = document.createElement('div');
+  actions.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap';
+  var saveBtn = document.createElement('button');
+  saveBtn.className = 'btn btn-secondary';
+  saveBtn.textContent = 'Сохранить прогресс в файл';
+  saveBtn.addEventListener('click', function() {
+    var data = JSON.stringify(STATE, null, 2);
+    downloadFile('trainer-progress.json', data, 'application/json');
+  });
+  actions.appendChild(saveBtn);
+  var loadBtn = document.createElement('button');
+  loadBtn.className = 'btn btn-secondary';
+  loadBtn.textContent = 'Загрузить прогресс';
+  loadBtn.addEventListener('click', function() {
+    document.getElementById('progress-file').click();
+  });
+  actions.appendChild(loadBtn);
+  var resetBtn = document.createElement('button');
+  resetBtn.className = 'btn btn-secondary';
+  resetBtn.textContent = 'Сбросить прогресс';
+  resetBtn.addEventListener('click', function() {
+    if (confirm('Сбросить весь прогресс ученика?')) {
+      STATE = newProfile();
+      saveState();
+      render();
+    }
+  });
+  actions.appendChild(resetBtn);
+  card.appendChild(actions);
+
+  var fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.id = 'progress-file';
+  fileInput.accept = '.json';
+  fileInput.style.display = 'none';
+  fileInput.addEventListener('change', function(e) {
+    if (e.target.files[0]) loadProgressFile(e.target.files[0]);
+  });
+  card.appendChild(fileInput);
+
+  var warn = document.createElement('div');
+  warn.className = 'warn';
+  warn.style.marginTop = '20px';
+  var strongW = document.createElement('strong');
+  strongW.textContent = 'Предупреждение: ';
+  warn.appendChild(strongW);
+  warn.appendChild(document.createTextNode('в автономном HTML-файле ответы видны в исходном коде — это тренажёр для подготовки, а не контрольная работа.'));
+  card.appendChild(warn);
+
+  root.appendChild(card);
+}
+
+function loadProgressFile(file) {
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var data = JSON.parse(e.target.result);
+      if (!data.bankVersion || !data.attempts) throw new Error('Неверная структура файла');
+      if (data.bankVersion !== BANK.bankVersion) {
+        alert('Версия банка в файле (' + data.bankVersion + ') не совпадает с текущей (' + BANK.bankVersion + '). Прогресс не загружен.');
+        return;
+      }
+      if (!confirm('Загрузить прогресс из файла? Текущий прогресс будет заменён.')) return;
+      STATE = data;
+      STATE.currentSession = null;
+      saveState();
+      render();
+    } catch (err) {
+      alert('Ошибка загрузки: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function downloadFile(name, content, type) {
+  var blob = new Blob([content], { type: type });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function renderFooter() {
+  var f = document.getElementById('footer');
+  f.innerHTML = '';
+  f.appendChild(document.createTextNode('Тренажёр ЕГЭ Английский язык 2026 · '));
+  var t = document.createElement('a');
+  t.textContent = 'Для учителя';
+  t.addEventListener('click', function() {
+    STATE.currentSession = { stage: 'teacher' };
+    saveState();
+    render();
+  });
+  f.appendChild(t);
+  f.appendChild(document.createTextNode(' · '));
+  var r = document.createElement('a');
+  r.textContent = 'Сбросить прогресс';
+  r.addEventListener('click', function() {
+    if (confirm('Сбросить весь прогресс?')) {
+      STATE = newProfile();
+      saveState();
+      render();
+    }
+  });
+  f.appendChild(r);
+}
+
+// ===== ЗАПУСК =====
+loadState();
+render();
+console.log('Тренажёр загружен. Заданий:', BANK.questions.length);
+console.log('Диагностика:', BANK.questions.filter(function(q){return q.role==='diagnostic';}).length);
+console.log('Тренировка:', BANK.questions.filter(function(q){return q.role==='practice';}).length);
+console.log('Контроль:', BANK.questions.filter(function(q){return q.role==='control';}).length);
+</script>
+</body>
+</html>
